@@ -1,234 +1,150 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>selfbags.it a Matera – Custodisci chiavi e bagagli – Keep keys and bags</title>
-  <meta name="description" content="SELF BAGS offre una soluzione pratica e veloce per liberarsi dei propri bagagli con semplicità. Le vostre chiavi o bagagli saranno al sicuro 365 giorni l'anno." />
-  <link rel="stylesheet" href="styles.css" />
-  <!-- Open Graph / Twitter cards -->
-  <meta property="og:title" content="selfbags.it a Matera – Custodisci chiavi e bagagli" />
-  <meta property="og:description" content="SELF BAGS offre una soluzione pratica e veloce per liberarsi dei propri bagagli con semplicità. Le vostre chiavi o bagagli saranno al sicuro 365 giorni l'anno." />
-  <meta property="og:type" content="website" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SELF BAGS - Deposito Bagagli e Chiavi a Matera - Minimal & Modern</title>
+    <meta name="description" content="SELF BAGS offre un deposito bagagli e chiavi sicuro, monitorato e assicurato a Matera. Soluzione pratica e veloce per liberarsi dei bagagli.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
 </head>
 <body>
-  <a class="skip-link" href="#main">Vai al contenuto</a>
 
-  <header class="site-header" role="banner">
-    <div class="header-inner">
-      <!-- Logo SVG (usare questo SVG o sostituire con il logo ufficiale) -->
-      <a class="logo" href="#home" aria-label="SELF BAGS Home">
-        <svg width="160" height="40" viewBox="0 0 320 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <defs>
-            <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
-              <stop offset="0" stop-color="#0b6b63"/>
-              <stop offset="1" stop-color="#2aa99a"/>
-            </linearGradient>
-          </defs>
-          <rect rx="8" width="320" height="80" fill="transparent"/>
-          <g transform="translate(12,10)">
-            <circle cx="32" cy="30" r="22" fill="url(#g1)"/>
-            <path d="M22 28 L42 28 L42 18 L22 18 Z" fill="#fff" opacity="0.95"/>
-            <text x="80" y="38" font-family="Inter, system-ui, Arial" font-size="28" fill="#0b6b63" font-weight="700">SELF BAGS</text>
-          </g>
-        </svg>
-      </a>
-
-      <nav class="main-nav" role="navigation" aria-label="Navigazione principale">
-        <ul>
-          <li><a href="#home" data-scroll>Home</a></li>
-          <li><a href="#servizi" data-scroll>Servizi</a></li>
-          <li><a href="#sicurezza" data-scroll>Sicurezza</a></li>
-          <li><a href="#contatti" data-scroll>Contatti</a></li>
-        </ul>
-      </nav>
-
-      <button class="cta" id="cta-telefono" aria-label="Contattaci">
-        +39 0835 185 6939
-      </button>
-    </div>
-  </header>
-
-  <main id="main" role="main">
-    <!-- HERO / Carousel sostituito da hero moderno con carosello minimal -->
-    <section id="home" class="hero" aria-label="Hero SELF BAGS">
-      <div class="hero-grid">
-        <div class="hero-carousel" aria-roledescription="carousel">
-          <div class="slide active" data-index="0">
-            <div class="slide-content">
-              <h1>SELF BAGS</h1>
-              <p>PRENOTA SUBITO Siete a Matera per vacanza o viaggio di lavoro? SELF BAGS vi offre una soluzione pratica e veloce per liberarsi dei propri bagagli con semplicità.</p>
-              <a class="btn btn-primary" href="#servizi" data-scroll>Scopri come funziona</a>
-            </div>
-            <div class="slide-graphic">
-              <!-- Minimal inline animated SVG or Lottie placeholder -->
-              <svg class="illustr" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <rect x="8" y="30" width="120" height="80" rx="8" fill="#f3fdfa"/>
-                <rect x="16" y="40" width="40" height="40" rx="6" fill="url(#g1)"/>
-                <path d="M150 40 L180 40 L180 100 L150 100 Z" fill="#e8fff9"/>
-                <circle cx="40" cy="60" r="4" fill="#fff"/>
-              </svg>
-            </div>
-          </div>
-
-          <div class="slide" data-index="1">
-            <div class="slide-content">
-              <h1>Sicurezza e Monitoraggio</h1>
-              <p>Le vostre chiavi o bagagli saranno al sicuro 365 giorni l'anno. Sono assicurati e costantemente monitorati.</p>
-              <a class="btn btn-primary" href="#sicurezza" data-scroll>Dettagli sicurezza</a>
-            </div>
-            <div class="slide-graphic">
-              <svg class="illustr" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <rect x="12" y="24" width="88" height="88" rx="12" fill="url(#g1)"/>
-                <path d="M120 40 C140 50 160 80 140 108" stroke="#0b6b63" stroke-width="4" fill="none" stroke-linecap="round"/>
-                <circle cx="145" cy="105" r="6" fill="#2aa99a"/>
-              </svg>
-            </div>
-          </div>
-
-          <div class="slide" data-index="2">
-            <div class="slide-content">
-              <h1>Servizio per Strutture Ricettive</h1>
-              <p>Il servizio di deposito è disponibile anche per le strutture ricettive, che possono consegnare le chiavi ai propri ospiti in qualsiasi momento.</p>
-              <a class="btn btn-primary" href="#contatti" data-scroll>Contattaci</a>
-            </div>
-            <div class="slide-graphic">
-              <svg class="illustr" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <rect x="18" y="36" width="120" height="72" rx="10" fill="#e8fff9"/>
-                <path d="M40 80 L80 80 L80 56" stroke="#0b6b63" stroke-width="4" stroke-linecap="round" fill="none"/>
-                <circle cx="130" cy="70" r="8" fill="url(#g1)"/>
-              </svg>
-            </div>
-          </div>
-
-          <button class="carousel-btn prev" aria-label="Slide precedente">&lt;</button>
-          <button class="carousel-btn next" aria-label="Slide successivo">&gt;</button>
-          <div class="carousel-dots" role="tablist" aria-label="Selettore slide"></div>
+    <header class="header">
+        <div class="container">
+            <a href="#hero" class="logo">
+                <div class="logo-svg">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7 11V6C7 3.79086 8.79086 2 11 2H13C15.2091 2 17 3.79086 17 6V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <rect x="5" y="11" width="14" height="11" rx="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                SELF BAGS
+            </a>
+            <nav class="nav">
+                <a href="#servizi" class="nav-link">Servizi</a>
+                <a href="#tariffe" class="nav-link">Tariffe</a>
+                <a href="#come-funziona" class="nav-link">Come Funziona</a>
+                <a href="#contatti" class="nav-link button primary-button">Contatti</a>
+            </nav>
+            <button class="menu-toggle" aria-label="Toggle Menu">&#9776;</button>
         </div>
+    </header>
 
-        <aside class="hero-info" aria-label="Informazioni di contatto rapido">
-          <div class="card">
-            <h3>Contatti</h3>
-            <p><strong>SELF BAGS</strong><br/>Vico I° Cappelluti n.11<br/>75100 Matera<br/><a href="mailto:info@selfbags.it">info@selfbags.it</a><br/><strong>+39 0835 185 6939</strong></p>
-          </div>
-
-          <div class="card small">
-            <h4>SERVIZI</h4>
-            <ul>
-              <li>Deposito bagagli</li>
-              <li>Custodia chiavi</li>
-              <li>Monitoraggio 24/7</li>
-            </ul>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <hr class="separator" />
-
-    <section id="servizi" class="section" aria-label="Servizi SELF BAGS">
-      <div class="container">
-        <h2>Servizi</h2>
-        <p>Gli armadietti possono essere prenotati online o direttamente in loco, sia per poche ore che per intere settimane.</p>
-
-        <div class="features">
-          <article class="feature">
-            <svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="8" fill="url(#g1)"/></svg>
-            <h3>Flessibilità</h3>
-            <p>Orari e durate adattabili secondo le tue esigenze.</p>
-          </article>
-
-          <article class="feature">
-            <svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="url(#g1)"/></svg>
-            <h3>Assicurazione</h3>
-            <p>Oggetti assicurati mentre sono custoditi.</p>
-          </article>
-
-          <article class="feature">
-            <svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M8 40 L40 40 L24 8 Z" fill="url(#g1)"/></svg>
-            <h3>Monitoraggio</h3>
-            <p>Controllo costante degli armadietti.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <hr class="separator" />
-
-    <section id="sicurezza" class="section" aria-label="Sicurezza">
-      <div class="container narrow">
-        <h2>SICUREZZA</h2>
-        <p>Le vostre chiavi o bagagli saranno al sicuro 365 giorni l'anno. Sono assicurati e costantemente monitorati. Telefonicamente potreste chiamare un nostro operatore, per fornirvi informazioni e assistervi al meglio.</p>
-
-        <div class="security-grid">
-          <div class="security-item">
-            <svg class="icon" viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="20" width="44" height="34" rx="6" fill="url(#g1)"/></svg>
-            <h4>Assicurazione</h4>
-            <p>Copertura completa durante il deposito.</p>
-          </div>
-
-          <div class="security-item">
-            <svg class="icon" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="18" fill="#e8fff9"/></svg>
-            <h4>Monitoraggio 24/7</h4>
-            <p>Sistemi di videosorveglianza e notifiche.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <hr class="separator" />
-
-    <section id="contatti" class="section" aria-label="Contatti SELF BAGS">
-      <div class="container">
-        <h2>Contatti</h2>
-        <p>Telefono e email per informazioni e assistenza.</p>
-
-        <div class="contact-grid">
-          <div class="contact-card">
-            <h3>SELF BAGS</h3>
-            <p>Vico I° Cappelluti n.11<br/>75100 Matera</p>
-            <p><a href="mailto:info@selfbags.it">info@selfbags.it</a><br/><strong>+39 0835 185 6939</strong></p>
-          </div>
-
-          <form class="contact-form" role="form" aria-label="Modulo contatti" onsubmit="return false;">
-            <label for="name">Nome</label>
-            <input id="name" name="name" type="text" />
-
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" />
-
-            <label for="message">Messaggio</label>
-            <textarea id="message" name="message" rows="4"></textarea>
-
-            <div class="form-actions">
-              <button class="btn btn-secondary" type="submit" disabled>Invia (non attivo)</button>
-              <span class="note">Il modulo è illustrativo; per contattare usare l'email diretta.</span>
+    <main>
+        
+        <section id="hero" class="hero-section">
+            <div class="container hero-content">
+                <div class="hero-text">
+                    <h1>Custodisci chiavi e bagagli – Keep keys and bags in Matera.</h1>
+                    <p class="subtitle">Siete a Matera per vacanza o viaggio di lavoro? **SELF BAGS** vi offre una soluzione pratica e veloce per liberarsi dei propri bagagli con semplicità.</p>
+                    <a href="#contatti" class="button primary-button large-button">PRENOTA SUBITO</a>
+                </div>
+                <div id="lottie-hero" class="hero-lottie">
+                    </div>
             </div>
-          </form>
-        </div>
-      </div>
-    </section>
+        </section>
 
-    <hr class="separator" />
+        <hr>
 
-    <footer class="site-footer" role="contentinfo">
-      <div class="container footer-inner">
-        <div>
-          <strong>SELF BAGS</strong><br/>
-          Vico I° Cappelluti n.11, 75100 Matera
+        <section id="servizi" class="section">
+            <div class="container">
+                <h2>I Nostri Vantaggi</h2>
+                <div class="grid-3">
+                    <div class="service-card">
+                        <div id="lottie-sicurezza" class="card-icon"></div>
+                        <h3>Sicurezza Garantita</h3>
+                        <p>Le vostre chiavi o bagagli saranno al sicuro 365 giorni l'anno. Sono assicurati e costantemente monitorati.</p>
+                    </div>
+                    <div class="service-card">
+                        <div id="lottie-assistenza" class="card-icon"></div>
+                        <h3>Assistenza Dedicata</h3>
+                        <p>Telefonicamente potreste chiamare un nostro operatore, per fornirvi informazioni e assistervi al meglio.</p>
+                    </div>
+                    <div class="service-card">
+                        <div id="lottie-flessibilita" class="card-icon"></div>
+                        <h3>Flessibilità Totale</h3>
+                        <p>Gli armadietti possono essere prenotati online o direttamente in loco, sia per poche ore che per intere settimane.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="tariffe" class="section dark-section">
+            <div class="container">
+                <h2>Servizio Affidabile</h2>
+                <div class="grid-2 reverse-on-mobile">
+                    <div class="content-text">
+                        <p>Il servizio di deposito è disponibile anche per le **strutture ricettive**, che attraverso **SELF BAGS** possono consegnare le chiavi ai propri ospiti in qualsiasi momento!</p>
+                        <p>SELF BAGS.</p>
+                        <a href="#contatti" class="button secondary-button">RICHIEDI INFO E TARIFFE</a>
+                    </div>
+                    <div id="lottie-chiavi" class="content-lottie">
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="come-funziona" class="section">
+            <div class="container">
+                <h2>Come Funziona?</h2>
+                <div class="grid-3">
+                    <div class="step-card">
+                        <span class="step-number">1</span>
+                        <h3>Prenota Online/In Loco</h3>
+                        <div id="lottie-prenota" class="step-icon"></div>
+                        <p>Scegli l'armadietto di cui hai bisogno direttamente online o presso la nostra sede.</p>
+                    </div>
+                    <div class="step-card">
+                        <span class="step-number">2</span>
+                        <h3>Deposita in Sicurezza</h3>
+                        <div id="lottie-deposita" class="step-icon"></div>
+                        <p>I tuoi oggetti saranno al sicuro, monitorati e assicurati per tutto il tempo necessario.</p>
+                    </div>
+                    <div class="step-card">
+                        <span class="step-number">3</span>
+                        <h3>Ritiro Flessibile</h3>
+                        <div id="lottie-ritira" class="step-icon"></div>
+                        <p>Ritiro dei bagagli e delle chiavi disponibile 365 giorni l'anno, in modo pratico e veloce.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="contatti" class="section contact-section dark-section">
+            <div class="container">
+                <h2>Contattaci</h2>
+                <p>Hai domande? Contattaci subito, siamo pronti ad assisterti al meglio.</p>
+                <div class="contact-info">
+                    <p>📧 Email: **info@selfbags.it**</p>
+                    <p>📞 Telefono: **+39 0835 185 6939**</p>
+                    <p>📍 Indirizzo: **Vico I° Cappelluti n.11, 75100 Matera**</p>
+                </div>
+                <p>SELF BAGS.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 SELF BAGS. Tutti i diritti riservati.</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">Privacy Policy</a>
+                <a href="#" class="footer-link">Termini e Condizioni</a>
+            </div>
         </div>
-        <div class="footer-links">
-          <a href="#sicurezza" data-scroll>SICUREZZA</a>
-          <a href="#servizi" data-scroll>SERVIZI</a>
-          <a href="#contatti" data-scroll>CONTATTI</a>
-        </div>
-        <div class="credits">
-          Designed by iCreative.it - Privacy & Cookie Policy
-        </div>
-      </div>
     </footer>
-  </main>
 
-  <script src="script.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
