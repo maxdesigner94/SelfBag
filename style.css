@@ -6,18 +6,19 @@
 }
 
 :root {
-    /* COLORI - Basati sul logo di selfbags.it (Assumiamo un blu profondo e un azzurro) */
-    --color-primary: #003366; /* Blu Profondo per Testo e Elementi Principali */
-    --color-secondary: #00A6D6; /* Azzurro per CTA e Accenti */
-    --color-text: #333333;
+    /* COLORI - Basati sul logo di selfbags.it (Blu Scuro/Navy e Giallo/Oro) */
+    --color-primary: #002B4B; /* Blu Scuro/Navy per Testo e Elementi Principali */
+    --color-secondary: #FFD700; /* Giallo/Oro per CTA e Accenti */
+    --color-text: #333333; /* Grigio scuro per testo generico */
     --color-background-light: #FFFFFF;
-    --color-background-dark: #F4F7FA; /* Sfondo leggermente grigio per sezioni scure */
+    --color-background-dark: #F0F5F8; /* Grigio molto chiaro per sezioni scure */
     --color-white: #FFFFFF;
-    --color-shadow: rgba(0, 0, 0, 0.05);
+    --color-shadow: rgba(0, 0, 0, 0.08); /* Ombra leggermente più marcata per contrasto */
 
     /* TIPOGRAFIA - Minimalista e leggibile */
     --font-family: 'Inter', sans-serif;
     --font-weight-regular: 400;
+    --font-weight-medium: 600; /* Aggiunto un peso intermedio per headings */
     --font-weight-bold: 700;
     
     /* SPAZIATURA */
@@ -53,6 +54,7 @@ body {
     text-align: center;
     margin-bottom: var(--spacing-md);
     font-size: 2.5rem;
+    font-weight: var(--font-weight-bold);
     color: var(--color-primary);
 }
 
@@ -70,18 +72,18 @@ hr {
     border-radius: 8px;
     text-decoration: none;
     font-weight: var(--font-weight-bold);
-    transition: background-color 0.3s, transform 0.2s;
+    transition: background-color 0.3s, transform 0.2s, color 0.3s;
     border: 2px solid transparent;
     text-align: center;
 }
 
 .primary-button {
     background-color: var(--color-secondary);
-    color: var(--color-white);
+    color: var(--color-primary); /* Testo scuro su bottone giallo */
 }
 
 .primary-button:hover {
-    background-color: #0087B3; /* Tonalità più scura di secondary */
+    background-color: #E6C200; /* Tonalità più scura di secondary */
     transform: translateY(-2px);
 }
 
@@ -105,7 +107,7 @@ hr {
 /* HEADER/NAVIGAZIONE */
 .header {
     background-color: var(--color-white);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid var(--color-background-dark); /* Bordo più discreto */
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -131,14 +133,14 @@ hr {
     width: 30px;
     height: 30px;
     margin-right: 10px;
-    color: var(--color-secondary);
+    color: var(--color-secondary); /* Colore icona logo */
 }
 
 .nav-link {
     margin-left: var(--spacing-sm);
     color: var(--color-primary);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: var(--font-weight-medium);
     transition: color 0.3s;
 }
 
@@ -183,8 +185,7 @@ hr {
     flex: 1;
     max-width: 50%;
     height: 350px;
-    /* Placeholder per Lottie */
-    background-color: var(--color-background-dark);
+    background-color: transparent; /* Lottie ha il suo sfondo */
     border-radius: 10px;
 }
 
@@ -208,7 +209,7 @@ hr {
     background-color: var(--color-white);
     padding: var(--spacing-md);
     border-radius: 10px;
-    box-shadow: 0 4px 10px var(--color-shadow);
+    box-shadow: 0 6px 15px var(--color-shadow); /* Ombra più pronunciata */
     text-align: center;
     transition: transform 0.3s;
 }
@@ -217,12 +218,21 @@ hr {
     transform: translateY(-5px);
 }
 
+.service-card h3, .step-card h3 {
+    color: var(--color-primary);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: 10px;
+}
+
 .card-icon, .step-icon {
     width: 80px;
     height: 80px;
     margin: 0 auto 15px;
-    background-color: var(--color-background-dark); /* Placeholder per Lottie/SVG */
+    background-color: transparent; /* Lottie gestirà lo sfondo */
     border-radius: 50%;
+    display: flex; /* Centra Lottie/SVG */
+    justify-content: center;
+    align-items: center;
 }
 
 .step-card {
@@ -236,7 +246,7 @@ hr {
     left: 50%;
     transform: translateX(-50%);
     background-color: var(--color-secondary);
-    color: var(--color-white);
+    color: var(--color-primary); /* Testo scuro su sfondo giallo */
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -245,12 +255,13 @@ hr {
     align-items: center;
     font-weight: var(--font-weight-bold);
     font-size: 1.2rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 /* SEZIONE TARIFFE (Contenuto e Lottie) */
 .content-lottie {
     height: 300px;
-    background-color: var(--color-background-light); /* Placeholder */
+    background-color: transparent; /* Lottie gestirà lo sfondo */
     border-radius: 10px;
 }
 
@@ -268,6 +279,11 @@ hr {
 .contact-info p {
     font-size: 1.2rem;
     margin: 10px 0;
+    font-weight: var(--font-weight-medium);
+}
+
+.contact-info p strong {
+    color: var(--color-primary);
 }
 
 /* FOOTER */
@@ -320,6 +336,7 @@ hr {
         background-color: var(--color-white);
         box-shadow: 0 4px 8px var(--color-shadow);
         padding: var(--spacing-sm) 0;
+        z-index: 999; /* Assicurati che il menu sia sopra il contenuto */
     }
 
     .nav.open {
@@ -357,6 +374,7 @@ hr {
     .hero-lottie {
         order: -1; /* Metti Lottie sopra il testo */
         margin-bottom: var(--spacing-md);
+        height: 250px; /* Adatta altezza Lottie mobile */
     }
     
     .hero-text h1 {
@@ -377,6 +395,7 @@ hr {
     .reverse-on-mobile .content-lottie {
         order: -1;
         margin-bottom: var(--spacing-md);
+        height: 200px;
     }
 
     /* Footer */
