@@ -1,18 +1,17 @@
 // js/main.js
 import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.min.js';
-
-// GSAP è globale
+// GSAP e ScrollTrigger sono caricati globalmente in index.html
 
 document.addEventListener('DOMContentLoaded', () => {
     
     // Riferimenti HTML
     const webglContainer = document.getElementById('webgl-container');
     const loadingOverlay = document.getElementById('loading-overlay');
-    const heroImageContainer = document.getElementById('hero-3d-object-placeholder');
 
     // Variabili Globali 3D
     let scene, camera, renderer;
     let tubeMesh;
+    let customShaderMaterial; // Rendi il materiale accessibile globalmente
     let mouse = { x: 0, y: 0 };
     const clock = new THREE.Clock();
 
@@ -38,22 +37,30 @@ document.addEventListener('DOMContentLoaded', () => {
             ease: 'power2.out',
             onComplete: () => {
                 loadingOverlay.classList.add('hidden');
-                // Animazione di entrata della Hero
+                
+                // Animazione di entrata della Hero Section (GSAP)
                 gsap.fromTo("#hero-section .hero-title", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1, delay: 0.2, ease: "power3.out" });
                 gsap.fromTo("#hero-section .hero-description", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1, delay: 0.4, ease: "power3.out" });
                 gsap.fromTo("#hero-section .hero-actions", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1, delay: 0.6, ease: "power3.out" });
-                gsap.fromTo(tubeMesh.scale, { x: 0, y: 0, z: 0 }, { x: 1, y: 1, z: 1, duration: 1.5, ease: "elastic.out(1, 0.5)", delay: 0.8 });
+                
+                // Animazione di entrata dell'oggetto 3D
+                if (tubeMesh) {
+                     gsap.fromTo(tubeMesh.scale, { x: 0, y: 0, z: 0 }, { x: 1, y: 1, z: 1, duration: 1.5, ease: "elastic.out(1, 0.5)", delay: 0.8 });
+                }
+
+                // SETUP DELLO SCROLLTRIGGER DOPO IL CARICAMENTO
+                setupScrollAnimations();
             }
         });
     };
 
     // ----------------------------------------------------
-    // CURVA DINAMICA E GEOMETRIA
+    // CURVA DINAMICA E GEOMETRIA (THREE.Curve & THREE.ShaderMaterial)
     // ----------------------------------------------------
 
     // Curva di Bézier 3D personalizzata
     class CustomCurve extends THREE.Curve {
-        constructor(scale = 10) {
+        constructor(scale = 15) {
             super();
             this.scale = scale;
         }
@@ -66,58 +73,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Materiale con Shader personalizzato (GLSL)
-    const customShaderMaterial = new THREE.ShaderMaterial({
-        uniforms: {
-            // Tempo per l'animazione
-            time: { value: 0.0 },
-            // Colore principale (il nostro neon ciano)
-            colorA: { value: new THREE.Color(0x00ffff) },
-            // Colore secondario (viola scuro)
-            colorB: { value: new THREE.Color(0x000044) },
-            // Posizione del mouse per interattività (passiamo l'offset)
-            mouseOffset: { value: new THREE.Vector2(0, 0) }
-        },
-        vertexShader: `
-            uniform float time;
-            varying vec2 vUv;
-            varying float vProgress;
+    const createShaderMaterial = () => {
+        return new THREE.ShaderMaterial({
+            uniforms: {
+                time: { value: 0.0 },
+                colorA: { value: new THREE.Color(0x00ffff) }, // Ciano iniziale
+                colorB: { value: new THREE.Color(0x000044) }, // Viola scuro
+                mouseOffset: { value: new THREE.Vector2(0, 0) }
+            },
+            vertexShader: `
+                uniform float time;
+                varying vec2 vUv;
+                varying float vProgress;
 
-            void main() {
-                vUv = uv;
-                vProgress = position.z; // Usiamo la Z come progresso lungo il tubo
-                
-                // Effetto ondulato sulla geometria nel tempo
-                vec3 newPosition = position;
-                float offset = sin(newPosition.x * 2.0 + time * 3.0) * 0.1;
-                newPosition.y += offset;
+                void main() {
+                    vUv = uv;
+                    vProgress = position.z; 
+                    
+                    // Effetto ondulato sulla geometria nel tempo
+                    vec3 newPosition = position;
+                    float offset = sin(newPosition.x * 2.0 + time * 3.0) * 0.1;
+                    newPosition.y += offset;
 
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
-            }
-        `,
-        fragmentShader: `
-            uniform float time;
-            uniform vec3 colorA;
-            uniform vec3 colorB;
-            uniform vec2 mouseOffset;
-            varying vec2 vUv;
-            varying float vProgress;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform float time;
+                uniform vec3 colorA;
+                uniform vec3 colorB;
+                uniform vec2 mouseOffset;
+                varying vec2 vUv;
+                varying float vProgress;
 
-            void main() {
-                // Interpolazione del colore lungo l'asse Z
-                vec3 color = mix(colorB, colorA, vProgress * 0.8 + 0.2);
+                void main() {
+                    // Interpolazione del colore lungo l'asse Z
+                    vec3 color = mix(colorB, colorA, vProgress * 0.8 + 0.2);
 
-                // Aggiungiamo un bagliore neon dinamico
-                float glow = sin(vUv.y * 10.0 + time * 5.0) * 0.2 + 0.8;
-                glow *= 1.0 - smoothstep(0.4, 0.5, length(mouseOffset)); // Riduce il bagliore se il mouse è fermo
-                
-                color *= glow * 1.5;
+                    // Aggiungiamo un bagliore neon dinamico
+                    float glow = sin(vUv.y * 10.0 + time * 5.0) * 0.2 + 0.8;
+                    glow *= 1.0 - smoothstep(0.4, 0.5, length(mouseOffset)); 
+                    
+                    color *= glow * 1.5;
 
-                // Finiamo con un po' di opacità per l'effetto olografico
-                gl_FragColor = vec4(color, 1.0);
-            }
-        `,
-        side: THREE.DoubleSide
-    });
+                    gl_FragColor = vec4(color, 1.0);
+                }
+            `,
+            side: THREE.DoubleSide
+        });
+    };
     
     // Funzione per creare e aggiungere la curva
     const createTube = () => {
@@ -129,39 +133,115 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const geometry = new THREE.TubeGeometry(path, segments, radius, radiusSegments, closed);
         
-        // Creiamo il mesh con lo ShaderMaterial
+        customShaderMaterial = createShaderMaterial();
         tubeMesh = new THREE.Mesh(geometry, customShaderMaterial);
-        tubeMesh.rotation.x = -Math.PI / 2; // Ruota per allinearlo all'orizzonte
-        tubeMesh.position.y = 0; // Posizione iniziale
         
+        // Impostazioni iniziali
+        tubeMesh.rotation.x = -Math.PI / 2; // Allinea sull'asse Z
+        tubeMesh.position.y = 0; 
+        tubeMesh.scale.set(0, 0, 0); // Inizializza a zero per l'animazione di entrata
+
         scene.add(tubeMesh);
-        console.log('Curva 3D aggiunta alla scena.');
         
-        // Simula che il caricamento sia completo dopo la creazione della mesh
-        // NOTA: In un caso reale, il LoadingManager gestisce GLTFLoader/TextureLoader,
-        // ma per il codice generato in runtime, simula qui il completamento.
-        // **Rimuovi la chiamata qui se usi loader effettivi!**
+        // Simula il completamento del caricamento (senza veri GLTFLoader)
         loadingManager.onLoad();
     };
 
     // ----------------------------------------------------
-    // INIZIALIZZAZIONE E LOOP
+    // GESTIONE TRANSIZIONI 3D (Sincronizzazione)
+    // ----------------------------------------------------
+    const handle3DNavigation = (section) => {
+        console.log(`Scena 3D: Attivo l'animazione per la sezione: ${section}`);
+        
+        if (!tubeMesh) return;
+
+        if (section === 'services') {
+            // Transizione a Servizi: Allontana camera, ruota curva, cambia colore
+            gsap.to(camera.position, { z: 8, duration: 2, ease: "power2.inOut" });
+            gsap.to(tubeMesh.rotation, { x: 0, y: Math.PI / 4, z: 0, duration: 2, ease: "power2.inOut" });
+            
+            // Cambio colore a Magenta
+            gsap.to(customShaderMaterial.uniforms.colorA.value, { 
+                r: 1, g: 0, b: 1, 
+                duration: 2
+            });
+            
+        } else if (section === 'home') {
+            // Transizione a Home: Ritorna alla posizione iniziale
+            gsap.to(camera.position, { z: 5, duration: 2, ease: "power2.inOut" });
+            gsap.to(tubeMesh.rotation, { x: -Math.PI / 2, y: 0, z: 0, duration: 2, ease: "power2.inOut" });
+            
+            // Ritorno al Ciano
+             gsap.to(customShaderMaterial.uniforms.colorA.value, { 
+                r: 0, g: 1, b: 1, 
+                duration: 2
+            });
+        }
+    };
+    
+    // ----------------------------------------------------
+    // SCROLLTRIGGER E ANIMAZIONI SEZIONI HTML
+    // ----------------------------------------------------
+    const setupScrollAnimations = () => {
+        
+        // Animazione titoli e sottotitoli della Sezione Servizi
+        gsap.fromTo("#services-section .section-title, #services-section .section-subtitle", 
+            { opacity: 0, y: 50 }, 
+            { 
+                opacity: 1, y: 0, duration: 1, stagger: 0.1, ease: "power2.out",
+                scrollTrigger: {
+                    trigger: "#services-section",
+                    start: "top center+=100", 
+                    toggleActions: "play none none reverse"
+                }
+            }
+        );
+
+        // Animazione delle card (Effetto Ologramma)
+        gsap.fromTo(".service-card", 
+            { opacity: 0, y: 50, rotationX: 15 }, 
+            { 
+                opacity: 1, y: 0, rotationX: 0, duration: 1, stagger: 0.15, ease: "power3.out",
+                scrollTrigger: {
+                    trigger: ".services-grid",
+                    start: "top center+=50",
+                    toggleActions: "play none none reverse"
+                }
+            }
+        );
+        
+        // Animazione 3D della scena sincronizzata allo Scroll
+        ScrollTrigger.create({
+            trigger: "#services-section",
+            start: "top bottom", 
+            end: "bottom top", 
+            onEnter: () => handle3DNavigation('services'),
+            onLeaveBack: () => handle3DNavigation('home'),
+        });
+    };
+
+
+    // ----------------------------------------------------
+    // INIZIALIZZAZIONE E LOOP PRINCIPALE
     // ----------------------------------------------------
 
     function init() {
-        // Setup base (camera, renderer, luci...)
+        // Setup Renderer
         renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio); 
         webglContainer.appendChild(renderer.domElement);
 
+        // Setup Scena e Camera
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
         camera.position.z = 5; 
         
+        // Luci
         const ambientLight = new THREE.AmbientLight(0x404040, 2); 
         scene.add(ambientLight);
 
+        // Creazione Oggetto 3D
         createTube();
 
         // Avvia l'animation loop
@@ -175,18 +255,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const delta = clock.getDelta();
         const elapsedTime = clock.getElapsedTime();
 
-        // Aggiorna l'uniform 'time' nello shader per l'animazione
-        customShaderMaterial.uniforms.time.value = elapsedTime;
+        // Aggiorna l'uniform 'time' nello shader per l'animazione dinamica
+        if (customShaderMaterial) {
+            customShaderMaterial.uniforms.time.value = elapsedTime;
+        }
 
-        // Logica di movimento della camera (Leggero movimento continuo)
+        // Movimento continuo e leggero della camera per "dare vita" alla scena
         camera.position.x = Math.sin(elapsedTime * 0.05) * 0.2;
         camera.position.y = Math.cos(elapsedTime * 0.05) * 0.2;
         
-        // Logica di movimento del tubo (Rotazione leggera)
+        // Logica di movimento della curva (Rotazione continua + Interattività)
         if (tubeMesh) {
+            // Rotazione continua
             tubeMesh.rotation.z += 0.005 * delta * 60; 
             
-            // Interattività: Sposta il tubo leggermente con il mouse
+            // Interattività: Sposta il tubo con il mouse (GSAP per easing)
             gsap.to(tubeMesh.position, {
                 x: mouse.x * 0.5,
                 y: mouse.y * 0.5,
@@ -195,14 +278,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             // Passa l'offset del mouse allo shader per l'effetto di bagliore interattivo
-            customShaderMaterial.uniforms.mouseOffset.value.set(mouse.x, mouse.y);
+            if (customShaderMaterial) {
+                customShaderMaterial.uniforms.mouseOffset.value.set(mouse.x, mouse.y);
+            }
         }
 
         renderer.render(scene, camera);
     };
 
     // ----------------------------------------------------
-    // EVENTI DI INTERATTIVITÀ
+    // EVENTI DI INTERATTIVITÀ GLOBALE
     // ----------------------------------------------------
 
     // Reattività al ridimensionamento
@@ -212,28 +297,29 @@ document.addEventListener('DOMContentLoaded', () => {
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // Reattività al movimento del mouse (Interazione UX)
+    // Reattività al movimento del mouse
     window.addEventListener('mousemove', (event) => {
         // Normalizza le coordinate del mouse da -1 a +1
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     });
     
-    // Reattività all'evento di navigazione dalla navbar
+    // Reattività all'evento di navigazione dalla navbar (click)
     window.addEventListener('navigate3D', (event) => {
         const section = event.detail.section;
-        console.log(`Scena 3D: Attivo l'animazione per la sezione: ${section}`);
+        handle3DNavigation(section);
         
-        // Esempio: Animazione della camera per la navigazione
-        if (section === 'services') {
-            gsap.to(camera.position, { z: 10, duration: 2, ease: "power2.inOut" });
-            gsap.to(tubeMesh.rotation, { x: 0, y: Math.PI / 2, z: 0, duration: 2, ease: "power2.inOut" });
-        } else if (section === 'home') {
-            gsap.to(camera.position, { z: 5, duration: 2, ease: "power2.inOut" });
-            gsap.to(tubeMesh.rotation, { x: -Math.PI / 2, y: 0, z: 0, duration: 2, ease: "power2.inOut" });
-        }
-        // Aggiungeremo più animazioni complesse man mano che sviluppiamo le sezioni.
+        // Scroll fluido alla sezione cliccata
+        gsap.to(window, { 
+            scrollTo: `#${section}-section`, 
+            duration: 1.5, 
+            ease: "power2.inOut" 
+        });
     });
+
+    // Avvia l'inizializzazione del WebGL
+    init();
+});
 
     // Avvia l'inizializzazione del WebGL
     init();
