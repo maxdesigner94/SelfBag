@@ -146,5 +146,218 @@ body {
     pointer-events: none; /* Rimuove la possibilità di interazione dopo l'animazione */
 }
 
+
+/* ... (Stili precedenti come reset, :root, body, #webgl-container, #main-header, .navbar, .logo, .nav-links, .menu-toggle, #loading-overlay) ... */
+
+/* ====================================
+   HERO SECTION STYLES
+   ==================================== */
+
+#hero-section {
+    position: relative; /* Per posizionamento del contenuto */
+    z-index: 5; /* Sopra la scena 3D ma sotto la navbar */
+    height: 100vh; /* Altezza piena della viewport */
+    display: flex;
+    align-items: center; /* Centra verticalmente il contenuto */
+    justify-content: center; /* Centra orizzontalmente il contenuto */
+    padding: 0 50px;
+    color: var(--color-text);
+    /* Rimuoviamo il background-color per far vedere la scena 3D */
+}
+
+.hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    gap: 80px; /* Spazio tra immagine e testo */
+}
+
+.hero-image-container {
+    flex: 1; /* Prende la metà dello spazio */
+    min-width: 400px; /* Larghezza minima per l'immagine */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Aggiungi un tocco 3D/futuristico al contenitore dell'immagine */
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+    background: rgba(3, 0, 30, 0.4);
+    padding: 30px;
+    border-radius: 10px;
+    transition: transform 0.5s ease;
+}
+
+.hero-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 5px; /* Angoli leggermente arrotondati */
+    filter: brightness(1.1) contrast(1.1); /* Leggero miglioramento visivo */
+}
+
+/* Animazione al hover dell'immagine */
+.hero-image-container:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), 0 0 50px rgba(0, 255, 255, 0.1);
+}
+
+.hero-text-container {
+    flex: 1; /* Prende l'altra metà dello spazio */
+    text-align: left;
+    max-width: 600px;
+}
+
+.hero-title {
+    font-size: 3.5em;
+    line-height: 1.2;
+    margin-bottom: 25px;
+    font-weight: 700;
+    color: white; /* Titolo più luminoso */
+    text-shadow: 0 0 15px rgba(0, 255, 255, 0.5); /* Effetto neon */
+}
+
+.hero-description {
+    font-size: 1.2em;
+    line-height: 1.6;
+    margin-bottom: 40px;
+    color: var(--color-text);
+}
+
+.hero-actions {
+    display: flex;
+    gap: 20px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 15px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-bg); /* Testo scuro su bottone chiaro */
+    border: none;
+    box-shadow: 0 0 15px var(--color-primary);
+}
+
+.btn-primary:hover {
+    background-color: white;
+    box-shadow: 0 0 25px var(--color-primary), 0 0 40px rgba(0, 255, 255, 0.3);
+    transform: translateY(-3px);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+    box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-primary);
+    color: var(--color-bg);
+    box-shadow: 0 0 20px var(--color-primary);
+    transform: translateY(-3px);
+}
+
+
+/* ====================================
+   MEDIA QUERIES FOR RESPONSIVENESS
+   ==================================== */
+@media (max-width: 1024px) {
+    .hero-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 60px;
+    }
+    .hero-image-container {
+        min-width: unset;
+        width: 80%; /* Occupa più larghezza */
+        margin-bottom: 30px;
+    }
+    .hero-text-container {
+        max-width: 80%;
+    }
+    .hero-title {
+        font-size: 2.8em;
+    }
+    .hero-description {
+        font-size: 1.1em;
+    }
+    .hero-actions {
+        justify-content: center;
+    }
+    #main-header {
+        padding: 15px 30px;
+    }
+    .navbar {
+        flex-direction: column; /* Stacca logo e nav links */
+        align-items: center;
+    }
+    .nav-links {
+        margin-top: 15px;
+        flex-wrap: wrap; /* Per evitare overflow su schermi molto piccoli */
+        justify-content: center;
+    }
+    .nav-links li {
+        margin: 0 15px 10px 15px; /* Spazio tra i link e un po' di margine in basso */
+    }
+}
+
+@media (max-width: 768px) {
+    #hero-section {
+        padding: 0 20px;
+    }
+    .hero-title {
+        font-size: 2.2em;
+    }
+    .hero-description {
+        font-size: 1em;
+    }
+    .btn {
+        padding: 12px 20px;
+        font-size: 1em;
+    }
+    .hero-image-container {
+        padding: 20px;
+    }
+    #main-header {
+        padding: 10px 20px;
+    }
+    .navbar {
+        flex-direction: row; /* Ritorna a riga per il toggle */
+        justify-content: space-between;
+    }
+    .nav-links {
+        display: none; /* Nascondiamo i link per il mobile */
+        /* Saranno mostrati da JS con il menu-toggle */
+    }
+    .menu-toggle {
+        display: flex; /* Mostra il toggle su mobile */
+        flex-direction: column;
+        justify-content: space-around;
+        width: 30px;
+        height: 20px;
+    }
+    .menu-toggle .bar {
+        width: 100%;
+        height: 3px;
+        background-color: var(--color-primary);
+        transition: all 0.3s ease;
+    }
+    /* Implementare poi la logica JS per il menu hamburger */
+}
+
+/* Potremmo aggiungere animazioni GSAP anche per l'entrata della hero section */
 /* Aggiungi media query per la responsività */
 /* ... (omesso per brevità, ma essenziale in un progetto reale) */
