@@ -1,11 +1,11 @@
-// Inizia con le dichiarazioni di precisione
+// Necessario per la precisione di calcolo
 precision highp float;
 
 // Variabile passata al Fragment Shader
 varying vec2 vUv;
 
 void main() {
-    vUv = uv; // Passa le coordinate UV (0.0 a 1.0)
-    // Trasforma la posizione del vertice nella posizione finale di clipping
+    vUv = uv; 
+    // Trasforma la posizione del vertice
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }
