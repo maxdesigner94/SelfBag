@@ -2,7 +2,7 @@
 let scene, camera, renderer, material, flowMesh;
 let uScrollProgress = 0.0;
 let uTime = 0.0;
-let svgMeshGroup; // Gruppo che conterrà la geometria SVG 3D
+let threeDObject; // La mesh che rappresenta l'oggetto 3D nella hero section
 
 // Registra i plugin di GSAP
 if (window.gsap && window.ScrollTrigger) {
@@ -39,15 +39,15 @@ async function init() {
 
         // 2. Creazione dell'Oggetto 3D
         createSharedShaderMaterial(vertexShaderSource, fragmentShaderSource);
-        createFlowMesh(aspect); // Crea il piano invisibile per il flusso
         
-        // 3. Caricamento e Creazione della Geometria SVG 3D
-        createSvg3DMesh(); 
+        // Creiamo la geometria separatamente: una per il flusso verticale, una per l'oggetto Hero
+        createFlowMesh(aspect); // Flusso verticale che copre tutto
+        createHero3DObject(); // Oggetto 3D nella colonna destra
 
-        // 4. Setup Sincronizzazione per il Piano (Subito disponibile)
-        setupScrollSyncFlowPlane(); // Chiamiamo subito la sync del piano e dell'HTML
+        // 3. Setup Sincronizzazione
+        setupScrollSync(); 
 
-        // 5. Gestione degli eventi
+        // 4. Gestione degli eventi
         window.addEventListener('resize', onWindowResize);
 
         // Inizio del Loop di Animazione
@@ -58,13 +58,12 @@ async function init() {
     }
 }
 
-// ... (createSharedShaderMaterial e createFlowMesh NON MODIFICATI) ...
-
+// Crea il Materiale Shader Condiviso (NON MODIFICATO)
 function createSharedShaderMaterial(vsSource, fsSource) {
     material = new THREE.ShaderMaterial({
         uniforms: {
             uTime: { value: 0.0 },
-            uScrollProgress: { value: 0.0 }, 
+            uScrollProgress: { value: 0.0 },
             uColor: { value: new THREE.Color(0x00ffff) } 
         },
         vertexShader: vsSource,
@@ -75,76 +74,42 @@ function createSharedShaderMaterial(vsSource, fsSource) {
     });
 }
 
+// Crea il Piano che copre tutto lo schermo (Flusso di Scorrimento)
 function createFlowMesh(aspect) {
+    // Piano per l'effetto di scorrimento verticale che usava prima l'SVG
     const geometry = new THREE.PlaneGeometry(2 * aspect, 2, 64, 64);
     flowMesh = new THREE.Mesh(geometry, material); 
     scene.add(flowMesh);
 }
 
 
-// Crea l'oggetto SVG 3D (ExtrudeGeometry) - MODIFICATO
-function createSvg3DMesh() {
-    const loader = new THREE.SVGLoader();
+// NUOVA FUNZIONE: Crea un oggetto 3D separato per la Hero Section (un cubo/simbolo)
+function createHero3DObject() {
+    // Usiamo una forma semplice (es. una BoxGeometry) per simulare l'oggetto 3D inerente alla corrente
+    const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.1); 
     
-    // CARICA IL TUO NUOVO SVG
-    loader.load('./models/svg/lightning.svg', function (data) {
-        
-        const paths = data.paths;
-        svgMeshGroup = new THREE.Group();
-        
-        svgMeshGroup.scale.set(0.005, -0.005, 0.005); 
-
-        const extrudeSettings = {
-            depth: 0.1, 
-            bevelEnabled: true,
-            bevelThickness: 0.05,
-            bevelSize: 0.02,
-            bevelSegments: 2
-        };
-
-        for (let i = 0; i < paths.length; i++) {
-            const path = paths[i];
-            
-            const shapes = THREE.SVGLoader.createShapes(path);
-
-            for (let j = 0; j < shapes.length; j++) {
-                const shape = shapes[j];
-                const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-                
-                // Applichiamo il material condiviso (il tuo shader di flusso) all'SVG 3D
-                const meshPart = new THREE.Mesh(geometry, material); 
-                svgMeshGroup.add(meshPart);
-            }
-        }
-        
-        // Posizionamento e Rotazione Iniziale
-        svgMeshGroup.position.set(0.6, 0.0, 0); 
-        svgMeshGroup.rotation.x = Math.PI * 0.1; 
-        svgMeshGroup.rotation.y = Math.PI * 0.2; 
-        
-        scene.add(svgMeshGroup);
-        
-        // **********************************************
-        // CHIAMATA CRUCIALE: AVVIA LE ANIMAZIONI SVG QUI
-        // **********************************************
-        setupScrollSyncSvg(); 
-
-    },
-    // Gestore del progresso (opzionale)
-    undefined, 
-    // Gestore degli errori (cruciale)
-    function (error) {
-        console.error('Errore nel caricamento del SVG.', error);
-        console.warn("Assicurati che 'models/svg/lightning.svg' esista e sia accessibile.");
-    });
+    // Creiamo un materiale separato per l'oggetto Hero per non influenzare il flusso globale,
+    // ma usiamo un ShaderMaterial simile per mantenere il look.
+    const heroMaterial = material.clone(); 
+    
+    threeDObject = new THREE.Mesh(geometry, heroMaterial); 
+    
+    // Posizionamento: 
+    // 0.5 a destra, 0 al centro Y, leggermente in avanti
+    threeDObject.position.set(0.6, 0.0, 0.1); 
+    
+    // Rotazione iniziale 
+    threeDObject.rotation.x = Math.PI * 0.1;
+    
+    scene.add(threeDObject);
 }
 
 
-// NUOVA FUNZIONE: Sincronizza solo gli elementi immediatamente disponibili (Piano e HTML)
-function setupScrollSyncFlowPlane() {
+// Funzione di Sincronizzazione
+function setupScrollSync() {
     const progressElement = document.getElementById('flow-progress');
 
-    // 1. Sincronizzazione 3D del Piano
+    // 1. Sincronizzazione 3D del Piano (Flusso)
     gsap.to(material.uniforms.uScrollProgress, {
         value: 1.0, 
         scrollTrigger: {
@@ -161,7 +126,15 @@ function setupScrollSyncFlowPlane() {
         }
     });
 
-    // 2. Sincronizzazione HTML
+    // 2. Animazione continua dell'Oggetto Hero 3D con GSAP (Rotazione/Movimento)
+    gsap.to(threeDObject.rotation, {
+        z: Math.PI * 2, // Ruota continuamente sull'asse Z
+        duration: 20,
+        repeat: -1,
+        ease: "none"
+    });
+    
+    // 3. Sincronizzazione HTML
     gsap.to("#activation-section .animated-text", {
         opacity: 1,
         y: 0, 
@@ -175,38 +148,11 @@ function setupScrollSyncFlowPlane() {
     });
 }
 
-// NUOVA FUNZIONE: Sincronizza solo l'SVG dopo il suo caricamento
-function setupScrollSyncSvg() {
-    // 3. Animazione SVG in Scroll
-    if (svgMeshGroup) {
-        gsap.to(svgMeshGroup.rotation, {
-            y: "+=" + Math.PI * 1, // Ruota di 180 gradi durante lo scroll
-            scrollTrigger: {
-                trigger: "body",
-                start: "top top",
-                end: "bottom bottom",
-                scrub: true,
-            }
-        });
-        
-        gsap.to(svgMeshGroup.position, {
-            y: -0.1, 
-            scrollTrigger: {
-                trigger: "#hero-flow",
-                start: "top top",
-                end: "bottom top",
-                scrub: true,
-            }
-        });
-    }
-}
-
-
-// ... (onWindowResize e animate NON MODIFICATI) ...
 
 function onWindowResize() {
     const aspect = window.innerWidth / window.innerHeight;
     
+    // Aggiorna la telecamera
     camera.left = -aspect;
     camera.right = aspect;
     camera.top = 1;
@@ -215,6 +161,7 @@ function onWindowResize() {
     
     renderer.setSize(window.innerWidth, window.innerHeight);
 
+    // Ricrea il piano del flusso per coprire la nuova dimensione
     if (flowMesh) {
         scene.remove(flowMesh);
         createFlowMesh(aspect);
@@ -229,10 +176,8 @@ function animate(time) {
         material.uniforms.uTime.value = uTime;
     }
     
-    // Rotazione continua dell'SVG (per mostrarne la natura 3D)
-    if (svgMeshGroup) { 
-        svgMeshGroup.rotation.y += 0.001; 
-    }
+    // Rotazione manuale leggera, se preferita a GSAP. In questo caso useremo GSAP.
+    // threeDObject.rotation.y += 0.001; 
 
     renderer.render(scene, camera);
 }
