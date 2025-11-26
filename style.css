@@ -227,4 +227,86 @@ body {
     100% { transform: rotate(360deg); }
 }
 
+/* ====================================
+   SEZIONE SERVIZI STYLES
+   ==================================== */
+
+.content-section {
+    /* Base per tutte le sezioni di contenuto (Hero, Services, etc.) */
+    min-height: 100vh; /* Ogni sezione prende almeno l'altezza della viewport */
+    padding: 100px 50px;
+    position: relative;
+    z-index: 5; 
+}
+
+#services-section {
+    background: transparent; /* Permette alla scena 3D di continuare a vedersi */
+    padding-top: 50px; /* Spazio aggiuntivo in alto */
+}
+
+.section-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 3em;
+    margin-bottom: 10px;
+    color: white;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    opacity: 0; /* Inizialmente nascosto per l'animazione GSAP */
+}
+
+.section-subtitle {
+    font-size: 1.2em;
+    color: var(--color-text);
+    margin-bottom: 60px;
+    opacity: 0; /* Inizialmente nascosto per l'animazione GSAP */
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    padding-bottom: 100px;
+}
+
+.service-card {
+    background: rgba(0, 255, 255, 0.05); /* Sfondo molto leggero */
+    border: 1px solid rgba(0, 255, 255, 0.1); /* Bordo sottile effetto ologramma */
+    padding: 30px;
+    border-radius: 12px;
+    transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
+    text-align: left;
+    transform: translateY(50px) rotateX(15deg); /* Iniziale 3D offset per GSAP */
+    opacity: 0; /* Inizialmente nascosto */
+    transform-style: preserve-3d; /* Abilita trasformazioni 3D migliori */
+}
+
+.service-card:hover {
+    transform: translateY(-5px) rotateX(0deg) scale(1.03);
+    box-shadow: 0 15px 40px rgba(0, 255, 255, 0.2), 0 0 25px rgba(0, 255, 255, 0.1);
+    background: rgba(0, 255, 255, 0.1);
+}
+
+.card-icon {
+    font-size: 2.5em;
+    display: block;
+    margin-bottom: 15px;
+    color: var(--color-primary);
+}
+
+.service-card h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: white;
+    text-shadow: 0 0 5px var(--color-primary);
+}
+
+.service-card p {
+    color: var(--color-text);
+    line-height: 1.5;
+}
+
 /* Media Queries per la responsività (omesse per brevità) */
