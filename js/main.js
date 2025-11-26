@@ -1,9 +1,8 @@
 // js/main.js
 
-// THREE è ora disponibile globalmente grazie allo script CDN in index.html
+// THREE è disponibile globalmente grazie allo script CDN in index.html
 
 const loadShaders = async (vertexPath, fragmentPath) => {
-    // Il resto del codice fetch rimane lo stesso
     const vertex = await fetch(vertexPath).then(res => res.text());
     const fragment = await fetch(fragmentPath).then(res => res.text());
     return { vertex, fragment };
@@ -48,7 +47,7 @@ const init = async () => {
         depthWrite: false,
     });
 
-    // A. Geometria del Flusso: Creiamo una curva complessa
+    // A. Geometria del Flusso: Curva complessa
     const points = [
         new THREE.Vector3(-3, 1.5, 0),
         new THREE.Vector3(-2, 0, 0),
