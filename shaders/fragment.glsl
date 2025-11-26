@@ -5,7 +5,7 @@ uniform float uScrollProgress;
 uniform vec3 uFlowColor;
 
 varying vec2 vUv;
-varying float vProgress; // Progresso lungo l'asse X della geometria
+varying float vProgress; 
 
 // Funzione per il calcolo del rumore
 float random (in vec2 st) {
@@ -16,9 +16,8 @@ float random (in vec2 st) {
 
 void main() {
     // 1. Definisci la zona di flusso basata sullo scroll
-    // Il flusso è una banda che si muove lungo la geometria (vProgress)
-    float flowWidth = 0.2; // Larghezza della banda luminosa
-    float flowPosition = uScrollProgress * 2.0; // Moltiplica per far scorrere il flusso lungo il percorso
+    float flowWidth = 0.2; 
+    float flowPosition = uScrollProgress * 2.0; 
 
     // Funzione triangolare per una zona centrale più luminosa
     float flowIntensity = 1.0 - abs(vProgress - flowPosition) / flowWidth;
@@ -31,20 +30,17 @@ void main() {
     
     // 3. Calcola l'opacità e il colore finale
     float glow = max(0.0, flowIntensity);
-    glow = pow(glow, 5.0); // Potenza per un effetto di glow più intenso e focalizzato
+    glow = pow(glow, 5.0); 
 
     // Il flusso ha un'opacità minima, visibile solo quando glow > 0
     float opacity = clamp(glow + sparkle, 0.0, 1.0);
     
     vec3 finalColor = uFlowColor * (glow * 1.5 + sparkle * 0.5);
 
-    // Bordo morbido per l'effetto glow
+    // Bordo morbido per l'effetto glow (se il tubo è spesso, si vuole che la luce sia al centro)
     float edge = 1.0 - smoothstep(0.4, 0.5, abs(vUv.y - 0.5) * 2.0);
     opacity *= edge;
     finalColor *= edge;
 
     gl_FragColor = vec4(finalColor, opacity);
-
-    // Opzione per un effetto additivo (per un glow più luminoso)
-    // gl_FragColor = vec4(finalColor * opacity, opacity);
 }
