@@ -1,4 +1,4 @@
-// Inizia con le dichiarazioni di precisione
+// Necessario per la precisione di calcolo
 precision highp float;
 
 // Uniforms (ricevuti da flow.js)
@@ -10,33 +10,34 @@ uniform vec3 uColor;
 varying vec2 vUv; 
 
 void main() {
-    // 1. Pattern di Flusso (linee che si muovono)
-    float flowPattern = fract(vUv.y * 5.0 + uTime * 0.1);
+    // 1. Pattern di Flusso (linee che si muovono verticalmente)
+    // uTime * 0.5 per la velocità del movimento, vUv.y * 10.0 per la frequenza delle linee
+    float flowPattern = fract(vUv.y * 10.0 + uTime * 0.5);
 
     // 2. Punto di Attivazione (Basato sullo Scroll)
-    // 1.0 - uScrollProgress fa sì che l'illuminazione inizi dall'alto (1.0) e scenda a 0.0
+    // 1.0 - uScrollProgress: l'illuminazione inizia in alto (1.0) e si estende verso il basso (0.0)
     float activationPoint = 1.0 - uScrollProgress; 
 
-    // Calcola l'intensità del flusso (solo se il pixel è "sotto" il punto di attivazione, con un fading)
-    // smoothstep crea una transizione morbida
-    float flowIntensity = smoothstep(activationPoint - 0.2, activationPoint, vUv.y); 
+    // Intensità del Flusso: Crea un'area illuminata che si espande con lo scroll
+    // smoothstep(bordo_inizio, bordo_fine, valore_attuale)
+    float flowIntensity = smoothstep(activationPoint - 0.3, activationPoint, vUv.y); 
 
-    // 3. Creazione del Bagliore (Glow)
-    // Crea una linea sottile e luminosa all'interno del pattern:
+    // 3. Creazione del Bagliore/Linea Sottile
     float band = abs(flowPattern - 0.5) * 2.0; 
-    float glow = pow(1.0 - band, 10.0); // pow(..., 10.0) crea il picco di luce
+    float glow = pow(1.0 - band, 15.0); // 15.0 crea un bagliore molto stretto e intenso
 
     // 4. Combinazione Finale
-    float finalGlow = flowIntensity * glow * 2.0; 
+    // Moltiplica l'intensità di scroll (flowIntensity) per il bagliore pulsante (glow)
+    float finalGlow = flowIntensity * glow * 3.0; // 3.0 è il moltiplicatore di luminosità
 
     // 5. Output
     float alpha = finalGlow * 0.7; 
 
-    // Se l'opacità è troppo bassa, il pixel non viene renderizzato (ottimizzazione)
+    // Ottimizzazione: non renderizzare i pixel quasi invisibili
     if (alpha < 0.001) {
         discard; 
     }
 
-    // Colore finale (colore base * intensità del bagliore)
+    // Colore finale (Colore uniforme * intensità calcolata, con alpha come opacità)
     gl_FragColor = vec4(uColor * finalGlow, alpha);
 }
