@@ -1,11 +1,57 @@
-/* ... Stili di Reset e Base (Non Modificati) ... */
+/* Variabili CSS e Reset */
+:root {
+    --color-electric: #00ffff;
+    --color-background: #000;
+}
+body { 
+    margin: 0; 
+    /* Scroll verticale abilitato, scroll orizzontale nascosto */
+    overflow-y: scroll; 
+    overflow-x: hidden; 
+    background-color: var(--color-background); 
+    font-family: 'Montserrat', Arial, sans-serif;
+    color: white;
+    min-height: 100vh;
+}
+main {
+    position: relative;
+    z-index: 20; /* Assicura che il contenuto sia sopra il canvas */
+}
 
-/* Layout della Hero Section */
+/* Contenitore del Canvas (Overlay Fisso) */
+#canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 10; 
+    /* Cruciale: permette di interagire con gli elementi HTML sottostanti */
+    pointer-events: none; 
+}
+canvas { 
+    display: block; 
+}
+
+/* --- Layout delle Sezioni --- */
+
+/* Contenitore base per le sezioni che creano lo scroll */
+.content-spacer { 
+    padding: 10vh 5vw; /* Padding generale ridotto leggermente */
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Layout della Hero Section (Due Colonne) */
 .hero-section {
     min-height: 100vh;
-    padding: 0 5vw; /* Rimosso il padding verticale eccessivo per centrare */
+    padding: 0 5vw; 
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Divide in due colonne */
+    /* Struttura a griglia: 1 unità per il testo, 1 unità per l'elemento 3D */
+    grid-template-columns: 1fr 1fr; 
     gap: 5%;
     align-items: center;
     justify-content: center;
@@ -14,17 +60,30 @@
 .hero-content-left {
     max-width: 500px;
     text-align: left;
-    padding-top: 5vh; /* Aggiunge un po' di spazio per il testo */
+    /* Assicura che il testo sia sempre visibile */
+    padding-top: 5vh; 
 }
 
 .hero-content-right {
-    height: 80vh; /* Definisce l'altezza dell'area 3D a destra */
+    height: 80vh; 
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+/* Sezioni che seguono la Hero */
+#activation-section {
+    min-height: 120vh; /* Sezione più lunga per ospitare il trigger */
+}
+.final-section {
+    min-height: 50vh;
+}
+
+
+/* --- Elementi UI e Animazione --- */
+
+/* Bottone Call to Action */
 .cta-button {
     background-color: var(--color-electric);
     color: #000;
@@ -33,7 +92,7 @@
     font-size: 1.1em;
     font-weight: bold;
     cursor: pointer;
-    margin-top: 20px;
+    margin-top: 25px;
     border-radius: 5px;
     transition: background-color 0.3s;
 }
@@ -41,40 +100,11 @@
     background-color: #00dddd;
 }
 
-/* Nascondiamo il prompt di scroll vecchio, lo riposizioniamo */
-.scroll-prompt {
-    position: absolute;
-    bottom: 5vh;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 1.2em;
-    color: var(--color-electric);
-    animation: pulse 1.5s infinite alternate;
-    margin-top: 0;
-}
-
-/* Sezioni di Contenuto (Tornano a scorrere in colonna) */
-.content-spacer { 
-    min-height: 100vh; /* Ogni sezione ha almeno 100vh di altezza */
-    padding: 20vh 5vw;
-    display: flex; /* Mantiene il contenuto centrato all'interno della sezione */
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-.intro-section {
-    min-height: 150vh; 
-}
-.final-section {
-    min-height: 50vh;
-}
-
-/* Stili per l'Animazione (Tornano a usare Y) */
+/* Elementi animati (Inizialmente invisibili o fuori schermo) */
 .animated-text {
     opacity: 0;
-    transform: translateY(50px); /* Usiamo Y invece di X */
-    transition: none; 
+    transform: translateY(50px); /* Animazione verticale da basso a alto */
+    transition: none; /* GSAP gestirà le transizioni */
 }
 .content-box {
     max-width: 800px;
@@ -85,11 +115,17 @@
     box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
 }
 
+/* Prompt di Scroll */
 .scroll-prompt {
-    margin-top: 50vh;
+    position: absolute;
+    bottom: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
     font-size: 1.2em;
     color: var(--color-electric);
     animation: pulse 1.5s infinite alternate;
+    z-index: 30; /* Assicura che sia sopra il canvas */
+    pointer-events: auto; /* Permette il tocco sui dispositivi mobili */
 }
 
 .progress-indicator {
@@ -102,7 +138,28 @@
     font-weight: bold;
 }
 
+/* Animazione per il Prompt (Pulsazione) */
 @keyframes pulse {
     from { opacity: 0.4; }
     to { opacity: 1.0; }
+}
+
+/* --- Media Queries per la Responsività (Mobile) --- */
+@media (max-width: 768px) {
+    .hero-section {
+        /* Su schermi piccoli, il layout diventa una singola colonna */
+        grid-template-columns: 1fr;
+    }
+    .hero-content-left {
+        text-align: center;
+        padding-top: 15vh;
+        padding-bottom: 5vh;
+    }
+    .hero-content-right {
+        /* Riduce l'altezza dell'area 3D per lasciare spazio al contenuto */
+        height: 50vh; 
+    }
+    .content-spacer {
+        padding: 5vh 5vw;
+    }
 }
