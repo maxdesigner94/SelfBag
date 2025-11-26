@@ -20,7 +20,7 @@ async function loadShader(url) {
     return response.text();
 }
 
-// Funzione di inizializzazione principale (NON MODIFICATO)
+// Funzione di inizializzazione principale - MODIFICATA
 async function init() {
     try {
         const vertexShaderSource = await loadShader('./shaders/vertex.glsl');
@@ -37,12 +37,20 @@ async function init() {
         camera = new THREE.OrthographicCamera(-aspect, aspect, 1, -1, 0.1, 1000);
         camera.position.z = 1;
 
+        // *** AGGIUNGIAMO LUCI PER GLI OGGETTI SOLIDI ***
+        const ambientLight = new THREE.AmbientLight(0x404040, 5); // Luce ambientale chiara
+        scene.add(ambientLight);
+        
+        const pointLight = new THREE.PointLight(0xffffff, 50); // Luce puntiforme
+        pointLight.position.set(5, 5, 5);
+        scene.add(pointLight);
+
+
         // 2. Creazione dell'Oggetto 3D
         createSharedShaderMaterial(vertexShaderSource, fragmentShaderSource);
         
-        // Creiamo la geometria separatamente: una per il flusso verticale, una per l'oggetto Hero
-        createFlowMesh(aspect); // Flusso verticale che copre tutto
-        createHero3DObject(); // Oggetto 3D nella colonna destra
+        createFlowMesh(aspect); 
+        createHero3DObject(); // Usa MeshPhongMaterial e sarà visibile grazie alle luci
 
         // 3. Setup Sincronizzazione
         setupScrollSync(); 
@@ -74,38 +82,41 @@ function createSharedShaderMaterial(vsSource, fsSource) {
     });
 }
 
-// Crea il Piano che copre tutto lo schermo (Flusso di Scorrimento)
+// Crea il Piano che copre tutto lo schermo (Flusso di Scorrimento) (NON MODIFICATO)
 function createFlowMesh(aspect) {
-    // Piano per l'effetto di scorrimento verticale che usava prima l'SVG
     const geometry = new THREE.PlaneGeometry(2 * aspect, 2, 64, 64);
     flowMesh = new THREE.Mesh(geometry, material); 
     scene.add(flowMesh);
 }
 
 
-// NUOVA FUNZIONE: Crea un oggetto 3D separato per la Hero Section (un cubo/simbolo)
+// NUOVA FUNZIONE: Crea un oggetto 3D separato per la Hero Section - MODIFICATA
 function createHero3DObject() {
-    // Usiamo una forma semplice (es. una BoxGeometry) per simulare l'oggetto 3D inerente alla corrente
+    // Usiamo una BoxGeometry e la rotiamo per simulare una forma energetica complessa
     const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.1); 
     
-    // Creiamo un materiale separato per l'oggetto Hero per non influenzare il flusso globale,
-    // ma usiamo un ShaderMaterial simile per mantenere il look.
-    const heroMaterial = material.clone(); 
+    // *** CAMBIAMENTO CRUCIALE: Usiamo MeshPhongMaterial per un oggetto solido e ben illuminato ***
+    const heroMaterial = new THREE.MeshPhongMaterial({
+        color: 0x00eeee, // Colore solido elettrico (visibile)
+        emissive: 0x003333, // Leggero bagliore proprio
+        specular: 0x00ffff, // Punti luce bianchi
+        shininess: 100 // Molto lucido
+    });
     
     threeDObject = new THREE.Mesh(geometry, heroMaterial); 
     
-    // Posizionamento: 
-    // 0.5 a destra, 0 al centro Y, leggermente in avanti
+    // Posizionamento
     threeDObject.position.set(0.6, 0.0, 0.1); 
     
-    // Rotazione iniziale 
-    threeDObject.rotation.x = Math.PI * 0.1;
+    // Rotazione iniziale (per mostrare che è 3D fin da subito)
+    threeDObject.rotation.x = Math.PI * 0.25; 
+    threeDObject.rotation.y = Math.PI * 0.25;
     
     scene.add(threeDObject);
 }
 
 
-// Funzione di Sincronizzazione
+// Funzione di Sincronizzazione (NON MODIFICATA)
 function setupScrollSync() {
     const progressElement = document.getElementById('flow-progress');
 
@@ -126,9 +137,9 @@ function setupScrollSync() {
         }
     });
 
-    // 2. Animazione continua dell'Oggetto Hero 3D con GSAP (Rotazione/Movimento)
+    // 2. Animazione continua dell'Oggetto Hero 3D con GSAP
     gsap.to(threeDObject.rotation, {
-        z: Math.PI * 2, // Ruota continuamente sull'asse Z
+        z: Math.PI * 2, 
         duration: 20,
         repeat: -1,
         ease: "none"
@@ -152,7 +163,6 @@ function setupScrollSync() {
 function onWindowResize() {
     const aspect = window.innerWidth / window.innerHeight;
     
-    // Aggiorna la telecamera
     camera.left = -aspect;
     camera.right = aspect;
     camera.top = 1;
@@ -161,13 +171,13 @@ function onWindowResize() {
     
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // Ricrea il piano del flusso per coprire la nuova dimensione
     if (flowMesh) {
         scene.remove(flowMesh);
         createFlowMesh(aspect);
     }
 }
 
+// Funzione Animate - MODIFICATA
 function animate(time) {
     requestAnimationFrame(animate);
 
@@ -176,8 +186,10 @@ function animate(time) {
         material.uniforms.uTime.value = uTime;
     }
     
-    // Rotazione manuale leggera, se preferita a GSAP. In questo caso useremo GSAP.
-    // threeDObject.rotation.y += 0.001; 
+    // Rotazione costante per un effetto dinamico (oltre alla rotazione Z di GSAP)
+    if (threeDObject) {
+        threeDObject.rotation.x += 0.005; // Rotazione lenta sull'asse X
+    }
 
     renderer.render(scene, camera);
 }
