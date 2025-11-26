@@ -2,7 +2,7 @@
 let scene, camera, renderer, material, flowMesh;
 let uScrollProgress = 0.0;
 let uTime = 0.0;
-let threeDObject; // La mesh che rappresenta l'oggetto 3D nella hero section
+let threeDObject; 
 
 // Registra i plugin di GSAP
 if (window.gsap && window.ScrollTrigger) {
@@ -11,16 +11,16 @@ if (window.gsap && window.ScrollTrigger) {
     console.error("GSAP o ScrollTrigger non caricati correttamente.");
 }
 
-// Funzione per caricare il contenuto di un file shader esterno (NON MODIFICATO)
+// Funzione per caricare il contenuto di un file shader esterno
 async function loadShader(url) {
     const response = await fetch(url);
     if (!response.ok) {
-        throw new Error(`Impossibile caricare lo shader da ${url}: ${err.statusText}`);
+        throw new Error(`Impossibile caricare lo shader da ${url}: ${response.statusText}`);
     }
     return response.text();
 }
 
-// Funzione di inizializzazione principale (NON MODIFICATO)
+// Funzione di inizializzazione principale
 async function init() {
     try {
         const vertexShaderSource = await loadShader('./shaders/vertex.glsl');
@@ -34,10 +34,11 @@ async function init() {
         scene = new THREE.Scene();
 
         const aspect = window.innerWidth / window.innerHeight;
+        // Camera Ortografica (fissa)
         camera = new THREE.OrthographicCamera(-aspect, aspect, 1, -1, 0.1, 1000);
         camera.position.z = 1;
 
-        // *** AGGIUNGIAMO LUCI PER GLI OGGETTI SOLIDI *** (NON MODIFICATO)
+        // *** AGGIUNGIAMO LUCI PER GLI OGGETTI SOLIDI ***
         const ambientLight = new THREE.AmbientLight(0x404040, 5); 
         scene.add(ambientLight);
         
@@ -49,8 +50,8 @@ async function init() {
         // 2. Creazione dell'Oggetto 3D
         createSharedShaderMaterial(vertexShaderSource, fragmentShaderSource);
         
-        createFlowMesh(aspect); 
-        createHero3DObject(); 
+        createFlowMesh(aspect); // Flusso a schermo intero
+        createHero3DObject(); // Oggetto 3D nella colonna destra
 
         // 3. Setup Sincronizzazione
         setupScrollSync(); 
@@ -66,7 +67,7 @@ async function init() {
     }
 }
 
-// Crea il Materiale Shader Condiviso (NON MODIFICATO)
+// Crea il Materiale Shader Condiviso
 function createSharedShaderMaterial(vsSource, fsSource) {
     material = new THREE.ShaderMaterial({
         uniforms: {
@@ -82,7 +83,7 @@ function createSharedShaderMaterial(vsSource, fsSource) {
     });
 }
 
-// Crea il Piano che copre tutto lo schermo (Flusso di Scorrimento) (NON MODIFICATO)
+// Crea il Piano che copre tutto lo schermo (Flusso di Scorrimento)
 function createFlowMesh(aspect) {
     const geometry = new THREE.PlaneGeometry(2 * aspect, 2, 64, 64);
     flowMesh = new THREE.Mesh(geometry, material); 
@@ -90,10 +91,12 @@ function createFlowMesh(aspect) {
 }
 
 
-// Crea un oggetto 3D separato per la Hero Section (NON MODIFICATO)
+// Crea un oggetto 3D separato per la Hero Section
 function createHero3DObject() {
+    // Box Geometry: può rappresentare un "nucleo energetico"
     const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.1); 
     
+    // Materiale Phong (lucido, reattivo alle luci)
     const heroMaterial = new THREE.MeshPhongMaterial({
         color: 0x00eeee, 
         emissive: 0x003333, 
@@ -103,8 +106,10 @@ function createHero3DObject() {
     
     threeDObject = new THREE.Mesh(geometry, heroMaterial); 
     
+    // Posizionamento nel quadrante in alto a destra (0.6 positivo è a destra)
     threeDObject.position.set(0.6, 0.0, 0.1); 
     
+    // Rotazione iniziale 
     threeDObject.rotation.x = Math.PI * 0.25; 
     threeDObject.rotation.y = Math.PI * 0.25;
     
@@ -112,11 +117,12 @@ function createHero3DObject() {
 }
 
 
-// Funzione di Sincronizzazione - MODIFICATA
+// Funzione di Sincronizzazione
 function setupScrollSync() {
     const progressElement = document.getElementById('flow-progress');
+    const heroSection = document.getElementById('hero-flow');
 
-    // 1. Sincronizzazione 3D del Piano (Flusso) - NON MODIFICATO
+    // 1. Sincronizzazione 3D del Piano (Flusso)
     gsap.to(material.uniforms.uScrollProgress, {
         value: 1.0, 
         scrollTrigger: {
@@ -133,7 +139,19 @@ function setupScrollSync() {
         }
     });
 
-    // 2. Animazione continua dell'Oggetto Hero 3D con GSAP - NON MODIFICATO
+    // 2. FISSAGGIO OGGETTO 3D alla HERO SECTION
+    // Sposta l'oggetto 3D inversamente allo scroll per farlo apparire "fisso" nella sezione
+    gsap.to(threeDObject.position, {
+        y: -1.0, // Spostamento sull'asse Y (verso l'alto)
+        scrollTrigger: {
+            trigger: heroSection,
+            start: "top top", 
+            end: "bottom top", 
+            scrub: true,
+        }
+    });
+
+    // 3. Animazione continua dell'Oggetto Hero 3D (Rotazione Z)
     gsap.to(threeDObject.rotation, {
         z: Math.PI * 2, 
         duration: 20,
@@ -141,19 +159,7 @@ function setupScrollSync() {
         ease: "none"
     });
     
-    // RIMOZIONE CRUCIALE: Ho rimosso il codice GSAP che animava la posizione Y
-    /* gsap.to(threeDObject.position, {
-        y: -0.1, 
-        scrollTrigger: {
-            trigger: "#hero-flow",
-            start: "top top",
-            end: "bottom top",
-            scrub: true,
-        }
-    }); 
-    */ 
-    
-    // 3. Sincronizzazione HTML - NON MODIFICATO
+    // 4. Sincronizzazione HTML
     gsap.to("#activation-section .animated-text", {
         opacity: 1,
         y: 0, 
@@ -185,7 +191,7 @@ function onWindowResize() {
     }
 }
 
-// Funzione Animate (Rotazione X costante) - NON MODIFICATO
+// Funzione Animate
 function animate(time) {
     requestAnimationFrame(animate);
 
@@ -194,6 +200,7 @@ function animate(time) {
         material.uniforms.uTime.value = uTime;
     }
     
+    // Rotazione costante (Rotazione X)
     if (threeDObject) {
         threeDObject.rotation.x += 0.005; 
     }
