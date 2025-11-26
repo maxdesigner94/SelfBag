@@ -1,414 +1,170 @@
-/* RESET E FONDAMENTALI */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+/* Stile base e reset */
+:root {
+    --primary-color: #E74C3C; /* Rosso/Arancio sportivo */
+    --secondary-color: #2C3E50; /* Blu scuro elegante */
+    --text-light: #ECF0F1;
+    --text-dark: #34495E;
+    --bg-dark: #1C2833;
 }
 
-:root {
-    /* COLORI - Basati sul logo di selfbags.it (Blu Scuro/Navy e Giallo/Oro) */
-    --color-primary: #002B4B; /* Blu Scuro/Navy per Testo e Elementi Principali */
-    --color-secondary: #FFD700; /* Giallo/Oro per CTA e Accenti */
-    --color-text: #333333; /* Grigio scuro per testo generico */
-    --color-background-light: #FFFFFF;
-    --color-background-dark: #F0F5F8; /* Grigio molto chiaro per sezioni scure */
-    --color-white: #FFFFFF;
-    --color-shadow: rgba(0, 0, 0, 0.08); /* Ombra leggermente più marcata per contrasto */
-
-    /* TIPOGRAFIA - Minimalista e leggibile */
-    --font-family: 'Inter', sans-serif;
-    --font-weight-regular: 400;
-    --font-weight-medium: 600; /* Aggiunto un peso intermedio per headings */
-    --font-weight-bold: 700;
-    
-    /* SPAZIATURA */
-    --spacing-lg: 80px;
-    --spacing-md: 40px;
-    --spacing-sm: 20px;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    font-family: var(--font-family);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.6;
-    color: var(--color-text);
-    background-color: var(--color-background-light);
+    background-color: var(--bg-dark);
     scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 
-/* UTILITÀ E LAYOUT */
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--spacing-sm);
-}
-
-.section {
-    padding: var(--spacing-lg) 0;
-}
-
-.dark-section {
-    background-color: var(--color-background-dark);
-}
-
-.section h2 {
-    text-align: center;
-    margin-bottom: var(--spacing-md);
-    font-size: 2.5rem;
-    font-weight: var(--font-weight-bold);
-    color: var(--color-primary);
-}
-
-hr {
-    border: none;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    margin: 0 auto;
-    width: 80%;
-}
-
-/* BUTTONS */
-.button {
-    display: inline-block;
-    padding: 12px 25px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: var(--font-weight-bold);
-    transition: background-color 0.3s, transform 0.2s, color 0.3s;
-    border: 2px solid transparent;
-    text-align: center;
-}
-
-.primary-button {
-    background-color: var(--color-secondary);
-    color: var(--color-primary); /* Testo scuro su bottone giallo */
-}
-
-.primary-button:hover {
-    background-color: #E6C200; /* Tonalità più scura di secondary */
-    transform: translateY(-2px);
-}
-
-.secondary-button {
-    background-color: transparent;
-    border-color: var(--color-primary);
-    color: var(--color-primary);
-}
-
-.secondary-button:hover {
-    background-color: var(--color-primary);
-    color: var(--color-white);
-    transform: translateY(-2px);
-}
-
-.large-button {
-    padding: 15px 35px;
-    font-size: 1.1rem;
-}
-
-/* HEADER/NAVIGAZIONE */
-.header {
-    background-color: var(--color-white);
-    border-bottom: 1px solid var(--color-background-dark); /* Bordo più discreto */
-    position: sticky;
+/* 1. Canvas WebGL Fullscreen */
+#webgl-canvas {
+    position: fixed;
     top: 0;
-    z-index: 1000;
-    padding: 15px 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: block;
+    z-index: 1; /* Il livello inferiore */
 }
 
-.header .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    font-size: 1.5rem;
-    font-weight: var(--font-weight-bold);
-    color: var(--color-primary);
-    text-decoration: none;
-}
-
-.logo-svg {
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
-    color: var(--color-secondary); /* Colore icona logo */
-}
-
-.nav-link {
-    margin-left: var(--spacing-sm);
-    color: var(--color-primary);
-    text-decoration: none;
-    font-weight: var(--font-weight-medium);
-    transition: color 0.3s;
-}
-
-.nav-link:hover {
-    color: var(--color-secondary);
-}
-
-/* HERO SECTION */
-.hero-section {
-    padding: 100px 0;
-    background-color: var(--color-background-light);
-    min-height: 80vh;
-    display: flex;
-    align-items: center;
-}
-
-.hero-content {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-lg);
-}
-
-.hero-text {
-    flex: 1;
-    max-width: 50%;
-}
-
-.hero-text h1 {
-    font-size: 3rem;
-    line-height: 1.1;
-    margin-bottom: var(--spacing-sm);
-    color: var(--color-primary);
-}
-
-.hero-text .subtitle {
-    font-size: 1.25rem;
-    color: var(--color-text);
-    margin-bottom: var(--spacing-md);
-}
-
-.hero-lottie {
-    flex: 1;
-    max-width: 50%;
-    height: 350px;
-    background-color: transparent; /* Lottie ha il suo sfondo */
-    border-radius: 10px;
-}
-
-/* CARD GRIDS (Servizi e Come Funziona) */
-.grid-3 {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing-md);
-    margin-top: var(--spacing-md);
-}
-
-.grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-lg);
-    align-items: center;
-}
-
-/* SERVICE CARD */
-.service-card, .step-card {
-    background-color: var(--color-white);
-    padding: var(--spacing-md);
-    border-radius: 10px;
-    box-shadow: 0 6px 15px var(--color-shadow); /* Ombra più pronunciata */
-    text-align: center;
-    transition: transform 0.3s;
-}
-
-.service-card:hover, .step-card:hover {
-    transform: translateY(-5px);
-}
-
-.service-card h3, .step-card h3 {
-    color: var(--color-primary);
-    font-weight: var(--font-weight-medium);
-    margin-bottom: 10px;
-}
-
-.card-icon, .step-icon {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 15px;
-    background-color: transparent; /* Lottie gestirà lo sfondo */
-    border-radius: 50%;
-    display: flex; /* Centra Lottie/SVG */
-    justify-content: center;
-    align-items: center;
-}
-
-.step-card {
+/* 2. Overlay Contenuto HTML (Sovrapposto) */
+#content-overlay {
     position: relative;
-    padding-top: var(--spacing-lg);
+    z-index: 2; /* Il livello superiore */
+    color: var(--text-light);
+    pointer-events: none; /* Permette il click/drag sul canvas sottostante di default */
 }
 
-.step-number {
-    position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: var(--color-secondary);
-    color: var(--color-primary); /* Testo scuro su sfondo giallo */
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+/* 3. Stile Sezioni e Contenuto */
+.hero-section {
+    height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-weight: var(--font-weight-bold);
-    font-size: 1.2rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    pointer-events: auto; /* Riattiva i click per i contenuti */
+    padding: 20px;
+    background: transparent;
 }
 
-/* SEZIONE TARIFFE (Contenuto e Lottie) */
-.content-lottie {
-    height: 300px;
-    background-color: transparent; /* Lottie gestirà lo sfondo */
+.header-content {
+    max-width: 600px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 30px;
     border-radius: 10px;
 }
 
-.content-text p {
-    margin-bottom: var(--spacing-sm);
-    font-size: 1.1rem;
+h1 {
+    font-size: 3em;
+    margin-bottom: 10px;
+    color: var(--primary-color);
 }
 
-/* SEZIONE CONTATTI */
-.contact-section {
-    text-align: center;
-    padding: var(--spacing-lg) 0;
+.slogan {
+    font-size: 1.2em;
+    margin-bottom: 30px;
 }
 
-.contact-info p {
-    font-size: 1.2rem;
-    margin: 10px 0;
-    font-weight: var(--font-weight-medium);
+.drag-hint {
+    position: absolute;
+    bottom: 20px;
+    font-style: italic;
+    opacity: 0.7;
 }
 
-.contact-info p strong {
-    color: var(--color-primary);
-}
-
-/* FOOTER */
-.footer {
-    background-color: var(--color-primary);
-    color: var(--color-white);
-    padding: var(--spacing-sm) 0;
-    font-size: 0.9rem;
-}
-
-.footer .container {
+.scroll-section {
+    min-height: 100vh; /* Alto abbastanza per attivare ScrollTrigger */
+    padding: 100px 5vw;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
+    text-align: center;
+    pointer-events: auto;
+    background: linear-gradient(to bottom, var(--bg-dark) 0%, rgba(28, 40, 51, 0.9) 100%);
 }
 
-.footer-links a {
-    color: var(--color-white);
-    margin-left: var(--spacing-sm);
+.scroll-section h2 {
+    font-size: 2.5em;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.scroll-section p {
+    max-width: 800px;
+    font-size: 1.1em;
+    margin-bottom: 40px;
+}
+
+/* 4. Stile CTA */
+.cta-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.cta-button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
     text-decoration: none;
-    opacity: 0.8;
+    transition: all 0.3s ease;
 }
 
-.footer-links a:hover {
-    opacity: 1;
+.primary-cta {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    border: 2px solid var(--primary-color);
 }
 
-/* RESPONSIVITÀ MOBILE (Max-width 768px) */
+.primary-cta:hover {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.secondary-cta {
+    background-color: transparent;
+    color: var(--text-light);
+    border: 2px solid var(--text-light);
+}
+
+.secondary-cta:hover {
+    background-color: var(--text-light);
+    color: var(--secondary-color);
+}
+
+/* 5. Footer */
+footer {
+    padding: 20px;
+    text-align: center;
+    font-size: 0.8em;
+    opacity: 0.6;
+    background-color: var(--bg-dark);
+}
+
+/* Media Query per Mobile */
 @media (max-width: 768px) {
-    
-    /* Regolazioni Spaziatura e Font */
-    :root {
-        --spacing-lg: 60px;
-        --spacing-md: 30px;
+    h1 {
+        font-size: 2.5em;
     }
-
-    .section h2 {
-        font-size: 2rem;
+    .slogan {
+        font-size: 1em;
     }
-
-    /* Header e Navigazione */
-    .nav {
-        display: none; /* Nascondi la navigazione standard */
+    .cta-group {
         flex-direction: column;
-        position: absolute;
-        top: 60px; /* Altezza Header */
-        left: 0;
-        width: 100%;
-        background-color: var(--color-white);
-        box-shadow: 0 4px 8px var(--color-shadow);
-        padding: var(--spacing-sm) 0;
-        z-index: 999; /* Assicurati che il menu sia sopra il contenuto */
+        gap: 10px;
     }
-
-    .nav.open {
-        display: flex;
-    }
-
-    .nav-link {
-        margin: 10px var(--spacing-sm);
-        text-align: center;
-    }
-
-    .menu-toggle {
-        display: block;
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        cursor: pointer;
-        color: var(--color-primary);
-    }
-    
-    .button.large-button {
-        width: 100%; /* I pulsanti CTA occupano tutta la larghezza */
-    }
-
-    /* Hero Section */
-    .hero-content {
-        flex-direction: column; /* Impila il contenuto e Lottie */
-        text-align: center;
-    }
-
-    .hero-text, .hero-lottie {
-        max-width: 100%;
-    }
-
-    .hero-lottie {
-        order: -1; /* Metti Lottie sopra il testo */
-        margin-bottom: var(--spacing-md);
-        height: 250px; /* Adatta altezza Lottie mobile */
-    }
-    
-    .hero-text h1 {
-        font-size: 2.2rem;
-    }
-
-    /* Sezione Tariffe */
-    .grid-2 {
-        grid-template-columns: 1fr;
-    }
-    
-    .reverse-on-mobile {
-        /* Inverti l'ordine per testo prima di Lottie in questa sezione */
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .reverse-on-mobile .content-lottie {
-        order: -1;
-        margin-bottom: var(--spacing-md);
-        height: 200px;
-    }
-
-    /* Footer */
-    .footer .container {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .footer p {
-        margin-bottom: 10px;
-    }
-
-    .footer-links a {
-        margin: 0 10px;
+    .scroll-section {
+        padding: 50px 5vw;
     }
 }
