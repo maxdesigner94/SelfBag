@@ -1,39 +1,48 @@
 // Necessario per la precisione di calcolo
 precision highp float;
 
-// Uniforms (ricevuti da flow.js)
-// uTime è mantenuto per un leggero effetto pulsante sul bagliore, ma non per il movimento del flusso.
+// Uniforms 
 uniform float uTime;
-uniform float uScrollProgress;
+uniform float uScrollProgress; // Valore 0.0 (cima) a 1.0 (fondo)
 uniform vec3 uColor;
 
-// Variabile (ricevuta da vertex.glsl)
-varying vec2 vUv; 
+// Variabile 
+varying vec2 vUv; // Coordinate da 0.0 a 1.0
 
 void main() {
-    // 1. Punto di Attivazione (Basato sullo Scroll)
-    // 1.0 - uScrollProgress: l'illuminazione inizia in alto (1.0) e si estende verso il basso (0.0)
-    // Il progresso dello scroll determina il 'bordo' inferiore del flusso illuminato.
-    float activationPoint = 1.0 - uScrollProgress; 
+    // 1. Posizione Verticale dell'Onda (Basata sullo Scroll)
+    
+    // Invertiamo uScrollProgress in modo che 0.0 sia la cima dello schermo (vUv.y = 1.0)
+    // e 1.0 sia il fondo dello schermo (vUv.y = 0.0).
+    // Nota: vUv.y va da 0 (basso) a 1 (alto) in Three.js, quindi invertiamo.
+    float targetY = 1.0 - uScrollProgress;
+    
+    // 2. Definizione dello Spessore dell'Onda
+    // 'waveThickness' definisce quanto è spessa l'onda come frazione dell'altezza dello schermo (0.01 = 1%)
+    float waveThickness = 0.02; 
+    
+    // 3. Calcolo della Distanza dal Centro dell'Onda
+    // abs(vUv.y - targetY) calcola la distanza verticale del pixel corrente dal centro dell'onda.
+    float distance = abs(vUv.y - targetY);
+    
+    // 4. Creazione del Bagliore (Glow)
+    // Usiamo smoothstep per creare un bagliore intenso al centro e che sfuma rapidamente.
+    // L'onda è visibile solo se la distanza è minore di waveThickness.
+    // L'intensità massima si ha quando distance è 0.0.
+    float glow = smoothstep(waveThickness, 0.0, distance);
 
-    // 2. Intensità del Flusso: Crea un'area illuminata che si espande con lo scroll
-    // Usiamo smoothstep per creare un fading morbido.
-    // L'area tra activationPoint - 0.5 (inizio fading) e activationPoint (fine fading) è la zona di transizione.
-    float flowIntensity = smoothstep(activationPoint - 0.5, activationPoint, vUv.y); 
+    // 5. Modulazione per la Pulsazione
+    // Manteniamo una leggera pulsazione per renderla dinamica.
+    float pulse = (sin(uTime * 1.5) * 0.1) + 0.9; 
 
-    // 3. Modulazione per il Bagliore (Glow Statico o Pulsante)
-    // Creiamo un leggero effetto pulsante sul bagliore per renderlo dinamico, ma non mobile.
-    // Utilizziamo un seno sul tempo per far "respirare" l'intensità generale.
-    float pulse = (sin(uTime * 1.5) * 0.1) + 0.9; // Varia da 0.8 a 1.0 (leggera pulsazione)
+    // 6. Combinazione Finale
+    // Se glow è 0.0 (pixel è troppo lontano), finalGlow è 0.0.
+    float finalGlow = glow * 3.0 * pulse; // 3.0 è il moltiplicatore di luminosità
 
-    // 4. Combinazione Finale
-    // Applichiamo l'intensità del flusso e la pulsazione.
-    float finalGlow = flowIntensity * 2.0 * pulse; // 2.0 è il moltiplicatore di luminosità
+    // 7. Output
+    float alpha = finalGlow * 0.8; 
 
-    // 5. Output
-    float alpha = finalGlow * 0.8; // Opacità massima leggermente aumentata
-
-    // Ottimizzazione: non renderizzare i pixel quasi invisibili
+    // Ottimizzazione
     if (alpha < 0.001) {
         discard; 
     }
