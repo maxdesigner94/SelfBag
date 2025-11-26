@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flusso Elettrico Three.js & Shader</title>
+    <title>The Flow State | Energia Digitale Interattiva</title>
+    <meta name="description" content="Sito interattivo che utilizza Three.js e Shader per visualizzare un flusso energetico dinamico sincronizzato con lo scroll.">
     <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
@@ -11,17 +12,31 @@
         <canvas id="flowCanvas"></canvas>
     </div>
 
-    <div class="content-spacer">
-        <h1>Scorri per vedere la corrente invisibile prendere vita!</h1>
-        <p>Il flusso elettrico si illumina progressivamente in base alla tua posizione di scroll.</p>
-        <h2>Scroll down!</h2>
-        </div>
+    <main>
+        <section class="content-spacer intro-section">
+            <h1 class="seo-title">The Flow State: L'Energia del Digitale</h1>
+            <p>Scrolla per attivare la corrente invisibile. La tua azione innesca il rilascio di energia.</p>
+            <div class="scroll-prompt">SCROLL DOWN</div>
+        </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+        <section id="activation-section" class="content-spacer">
+            <div class="content-box">
+                <h2 class="animated-text">Caricamento Completo</h2>
+                <p class="animated-text">Il flusso ha raggiunto questo punto. Siamo esperti in UX/UI, SEO e WebGL. Questa sezione appare solo quando l'energia del flusso è attiva.</p>
+                <div class="progress-indicator">Posizione Flusso: <span id="flow-progress">0%</span></div>
+            </div>
+        </section>
 
-    <script src="flow.js"></script> 
+        <section class="content-spacer final-section">
+            <h2>Fine del Percorso</h2>
+            <p>L'esperienza interattiva si conclude qui. Ritorna in cima per ricaricare.</p>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js" defer></script>
+
+    <script src="flow.js" defer></script> 
 </body>
 </html>
