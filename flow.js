@@ -23,6 +23,7 @@ async function loadShader(url) {
 // Funzione di inizializzazione principale
 async function init() {
     try {
+        // Ipotizzando che gli shader files esistano:
         const vertexShaderSource = await loadShader('./shaders/vertex.glsl');
         const fragmentShaderSource = await loadShader('./shaders/fragment.glsl');
         const canvas = document.getElementById('flowCanvas');
@@ -34,7 +35,6 @@ async function init() {
         scene = new THREE.Scene();
 
         const aspect = window.innerWidth / window.innerHeight;
-        // Camera Ortografica (fissa)
         camera = new THREE.OrthographicCamera(-aspect, aspect, 1, -1, 0.1, 1000);
         camera.position.z = 1;
 
@@ -91,12 +91,10 @@ function createFlowMesh(aspect) {
 }
 
 
-// Crea un oggetto 3D separato per la Hero Section
+// Crea l'oggetto 3D per la Hero Section
 function createHero3DObject() {
-    // Box Geometry: può rappresentare un "nucleo energetico"
     const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.1); 
     
-    // Materiale Phong (lucido, reattivo alle luci)
     const heroMaterial = new THREE.MeshPhongMaterial({
         color: 0x00eeee, 
         emissive: 0x003333, 
@@ -106,10 +104,8 @@ function createHero3DObject() {
     
     threeDObject = new THREE.Mesh(geometry, heroMaterial); 
     
-    // Posizionamento nel quadrante in alto a destra (0.6 positivo è a destra)
     threeDObject.position.set(0.6, 0.0, 0.1); 
     
-    // Rotazione iniziale 
     threeDObject.rotation.x = Math.PI * 0.25; 
     threeDObject.rotation.y = Math.PI * 0.25;
     
@@ -117,7 +113,7 @@ function createHero3DObject() {
 }
 
 
-// Funzione di Sincronizzazione
+// Funzione di Sincronizzazione con GSAP
 function setupScrollSync() {
     const progressElement = document.getElementById('flow-progress');
     const heroSection = document.getElementById('hero-flow');
@@ -139,14 +135,27 @@ function setupScrollSync() {
         }
     });
 
-    // 2. FISSAGGIO OGGETTO 3D alla HERO SECTION
-    // Sposta l'oggetto 3D inversamente allo scroll per farlo apparire "fisso" nella sezione
+    // 2. FISSAGGIO OGGETTO 3D e USCITA DALLA VISTA
+    
+    // a) Fissaggio (muove inversamente allo scroll per mantenerlo fermo nella sezione)
     gsap.to(threeDObject.position, {
         y: -1.0, // Spostamento sull'asse Y (verso l'alto)
         scrollTrigger: {
             trigger: heroSection,
             start: "top top", 
             end: "bottom top", 
+            scrub: true,
+        }
+    });
+
+    // b) Animazione di Uscita (Fa svanire il contenuto HTML di sinistra)
+    gsap.to(".hero-content-left", {
+        opacity: 0,
+        y: -50, // Lo fa scorrere leggermente verso l'alto mentre svanisce
+        scrollTrigger: {
+            trigger: heroSection,
+            start: "bottom 80%", // Inizia a svanire quando la Hero Section è quasi fuori dalla vista
+            end: "bottom top", // Finito quando la Hero Section è fuori dalla vista
             scrub: true,
         }
     });
