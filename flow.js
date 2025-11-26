@@ -2,6 +2,7 @@
 let scene, camera, renderer, material, mesh;
 let uScrollProgress = 0.0;
 let uTime = 0.0;
+// Rimosso: const horizontalScroller = document.getElementById('horizontal-wrapper');
 
 // Registra i plugin di GSAP
 if (window.gsap && window.ScrollTrigger) {
@@ -10,7 +11,7 @@ if (window.gsap && window.ScrollTrigger) {
     console.error("GSAP o ScrollTrigger non caricati correttamente.");
 }
 
-// Funzione per caricare il contenuto di un file shader esterno
+// Funzione per caricare il contenuto di un file shader esterno (non modificata)
 async function loadShader(url) {
     const response = await fetch(url);
     if (!response.ok) {
@@ -19,10 +20,9 @@ async function loadShader(url) {
     return response.text();
 }
 
-// Funzione di inizializzazione principale
+// Funzione di inizializzazione principale (Ripristinato)
 async function init() {
     try {
-        // Carica i contenuti degli shader dai file
         const vertexShaderSource = await loadShader('./shaders/vertex.glsl');
         const fragmentShaderSource = await loadShader('./shaders/fragment.glsl');
 
@@ -79,18 +79,18 @@ function createFlowMesh(vsSource, fsSource) {
 }
 
 function setupScrollSync() {
-    // 1. Sincronizzazione 3D: Collega lo scroll (0-100%) all'uniform dello shader
+    // 1. Sincronizzazione 3D: Collega lo scroll VERTICALE all'uniform dello shader
     gsap.to(material.uniforms.uScrollProgress, {
         value: 1.0, 
         scrollTrigger: {
-            trigger: "body",
+            trigger: "body", // Ritorna al body come trigger
+            // Rimosso: scroller: horizontalScroller,
             start: "top top",
             end: "bottom bottom",
-            scrub: true, // Sincronizzazione fluida
+            // Rimosso: horizontal: true,
+            scrub: true, 
             onUpdate: (self) => {
-                // Aggiorna il valore globale (usato per debug/HTML)
                 uScrollProgress = self.progress; 
-                // Aggiorna l'indicatore HTML
                 const progressElement = document.getElementById('flow-progress');
                 if (progressElement) {
                     progressElement.textContent = `${Math.round(uScrollProgress * 100)}%`;
@@ -102,13 +102,15 @@ function setupScrollSync() {
     // 2. Sincronizzazione HTML: Animazione della Sezione di Attivazione
     gsap.to("#activation-section .animated-text", {
         opacity: 1,
-        y: 0,
-        stagger: 0.1, // Applica l'animazione con un leggero ritardo tra gli elementi
+        y: 0, // Animazione verticale
+        stagger: 0.1, 
         scrollTrigger: {
             trigger: "#activation-section",
-            start: "top 70%", // Inizia quando la sezione entra in vista
+            // Rimosso: scroller: horizontalScroller,
+            start: "top 70%", 
             end: "center 30%",
-            scrub: 1, // Smoothing di 1 secondo
+            // Rimosso: horizontal: true,
+            scrub: 1, 
         }
     });
 }
@@ -122,7 +124,6 @@ function onWindowResize() {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // Ricrea la geometria per assicurare che copra correttamente la viewport
     if (mesh) {
         scene.remove(mesh);
         createFlowMesh(material.vertexShader, material.fragmentShader);
@@ -132,7 +133,6 @@ function onWindowResize() {
 function animate(time) {
     requestAnimationFrame(animate);
 
-    // Aggiornamento dell'Uniform del Tempo
     uTime = time / 1000;
     if (material) {
         material.uniforms.uTime.value = uTime;
@@ -141,5 +141,4 @@ function animate(time) {
     renderer.render(scene, camera);
 }
 
-// Avvia l'app quando il DOM è pronto (grazie all'attributo defer, si può usare subito)
 document.addEventListener('DOMContentLoaded', init);
