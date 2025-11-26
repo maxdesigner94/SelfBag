@@ -5,7 +5,6 @@
 }
 body { 
     margin: 0; 
-    /* Scroll verticale abilitato, scroll orizzontale nascosto */
     overflow-y: scroll; 
     overflow-x: hidden; 
     background-color: var(--color-background); 
@@ -15,7 +14,7 @@ body {
 }
 main {
     position: relative;
-    z-index: 20; /* Assicura che il contenuto sia sopra il canvas */
+    z-index: 20; 
 }
 
 /* Contenitore del Canvas (Overlay Fisso) */
@@ -26,7 +25,6 @@ main {
     width: 100%;
     height: 100vh;
     z-index: 10; 
-    /* Cruciale: permette di interagire con gli elementi HTML sottostanti */
     pointer-events: none; 
 }
 canvas { 
@@ -35,9 +33,8 @@ canvas {
 
 /* --- Layout delle Sezioni --- */
 
-/* Contenitore base per le sezioni che creano lo scroll */
 .content-spacer { 
-    padding: 10vh 5vw; /* Padding generale ridotto leggermente */
+    padding: 10vh 5vw; 
     display: flex; 
     flex-direction: column;
     justify-content: center;
@@ -45,13 +42,12 @@ canvas {
     text-align: center;
 }
 
-/* Layout della Hero Section (Due Colonne) */
+/* Layout della Hero Section (Grid a due colonne) */
 .hero-section {
     min-height: 100vh;
     padding: 0 5vw; 
     display: grid;
-    /* Struttura a griglia: 1 unità per il testo, 1 unità per l'elemento 3D */
-    grid-template-columns: 1fr 1fr; 
+    grid-template-columns: 1fr 1fr; /* Due colonne di pari larghezza */
     gap: 5%;
     align-items: center;
     justify-content: center;
@@ -60,51 +56,71 @@ canvas {
 .hero-content-left {
     max-width: 500px;
     text-align: left;
-    /* Assicura che il testo sia sempre visibile */
     padding-top: 5vh; 
 }
 
 .hero-content-right {
     height: 80vh; 
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    /* L'oggetto 3D sarà posizionato qui dal JS */
 }
 
-/* Sezioni che seguono la Hero */
+/* Sezioni che seguono */
 #activation-section {
-    min-height: 120vh; /* Sezione più lunga per ospitare il trigger */
+    min-height: 120vh; 
 }
 .final-section {
     min-height: 50vh;
 }
 
 
-/* --- Elementi UI e Animazione --- */
+/* --- Elementi UI e Bottoni --- */
 
-/* Bottone Call to Action */
+/* Gruppo bottoni affiancati */
+.cta-button-group {
+    margin-top: 25px;
+    display: flex;
+    gap: 15px; /* Spazio tra i bottoni */
+}
+
+/* Stili Base per tutti i bottoni */
 .cta-button {
-    background-color: var(--color-electric);
-    color: #000;
     border: none;
     padding: 12px 25px;
-    font-size: 1.1em;
+    font-size: 1.0em;
     font-weight: bold;
     cursor: pointer;
-    margin-top: 25px;
     border-radius: 5px;
-    transition: background-color 0.3s;
-}
-.cta-button:hover {
-    background-color: #00dddd;
+    transition: all 0.3s;
 }
 
-/* Elementi animati (Inizialmente invisibili o fuori schermo) */
+/* 1. Bottone Primario (Acceso) */
+.cta-button.primary {
+    background-color: var(--color-electric);
+    color: #000;
+}
+.cta-button.primary:hover {
+    background-color: #00dddd;
+    box-shadow: 0 0 15px var(--color-electric);
+}
+
+/* 2. Bottone Secondario (Bordo) */
+.cta-button.secondary {
+    background-color: transparent;
+    color: var(--color-electric);
+    border: 2px solid var(--color-electric);
+}
+.cta-button.secondary:hover {
+    background-color: rgba(0, 255, 255, 0.1);
+    color: white;
+}
+
+
+/* Elementi animati */
 .animated-text {
     opacity: 0;
-    transform: translateY(50px); /* Animazione verticale da basso a alto */
-    transition: none; /* GSAP gestirà le transizioni */
+    transform: translateY(50px); 
+    transition: none; 
 }
 .content-box {
     max-width: 800px;
@@ -115,18 +131,7 @@ canvas {
     box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
 }
 
-/* Prompt di Scroll */
-.scroll-prompt {
-    position: absolute;
-    bottom: 5vh;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 1.2em;
-    color: var(--color-electric);
-    animation: pulse 1.5s infinite alternate;
-    z-index: 30; /* Assicura che sia sopra il canvas */
-    pointer-events: auto; /* Permette il tocco sui dispositivi mobili */
-}
+/* Rimosso: scroll-prompt */
 
 .progress-indicator {
     margin-top: 20px;
@@ -138,16 +143,9 @@ canvas {
     font-weight: bold;
 }
 
-/* Animazione per il Prompt (Pulsazione) */
-@keyframes pulse {
-    from { opacity: 0.4; }
-    to { opacity: 1.0; }
-}
-
 /* --- Media Queries per la Responsività (Mobile) --- */
 @media (max-width: 768px) {
     .hero-section {
-        /* Su schermi piccoli, il layout diventa una singola colonna */
         grid-template-columns: 1fr;
     }
     .hero-content-left {
@@ -155,11 +153,13 @@ canvas {
         padding-top: 15vh;
         padding-bottom: 5vh;
     }
+    .cta-button-group {
+        justify-content: center;
+    }
     .hero-content-right {
-        /* Riduce l'altezza dell'area 3D per lasciare spazio al contenuto */
         height: 50vh; 
     }
-    .content-spacer {
-        padding: 5vh 5vw;
+    .intro-section {
+        min-height: auto; /* Rimosso l'altezza forzata */
     }
 }
