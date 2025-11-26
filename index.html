@@ -3,56 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoVeloce Italia | Concessionaria Auto Nuove e Usate - Test Drive Subito!</title>
-    <meta name="description" content="Scopri le migliori offerte di Auto Nuove e Usate a Roma (Esempio). Prenota un Test Drive Esclusivo o richiedi un preventivo per la tua Auto Aziendale.">
-    <meta name="keywords" content="concessionaria auto, auto nuove, auto usate, test drive, auto aziendali, prima auto, offerte auto roma, finanziamenti auto">
-
-    <link rel="stylesheet" href="style.css">
+    <title>Flusso Elettrico Three.js & Shader</title>
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
-
-    <canvas id="webgl-canvas"></canvas>
-
-    <div id="content-overlay">
-
-        <header class="hero-section" id="section-0">
-            <div class="header-content">
-                <h1>AutoVeloce Italia</h1>
-                <p class="slogan">La tua Nuova Auto a Portata di Click | Massima Scelta, Minimo Sforzo.</p>
-                
-                <div class="cta-group">
-                    <a href="#section-1" class="cta-button primary-cta">Prenota un Test Drive 🚀</a>
-                    <a href="#section-2" class="cta-button secondary-cta">Scopri le Offerte</a>
-                </div>
-            </div>
-            <p class="drag-hint">Trascina Sinistra/Destra sull'auto 👆</p>
-        </header>
-
-        <section class="scroll-section" id="section-1">
-            <h2>L'Esperienza di Guida Definitiva</h2>
-            <p>Con il nostro modello di punta, senti la potenza e l'innovazione. Finiture di lusso, tecnologia all'avanguardia e sicurezza garantita. Il futuro è qui.</p>
-            <a href="#" class="cta-button primary-cta">Richiedi un Preventivo Personalizzato</a>
-        </section>
-
-        <section class="scroll-section" id="section-2">
-            <h2>Auto Aziendali e Prima Auto</h2>
-            <p>Che tu sia un professionista o un neopatentato, abbiamo la soluzione perfetta per te, con finanziamenti personalizzati e assistenza completa.</p>
-            <div class="cta-group">
-                <a href="mailto:info@autoveloce.it" class="cta-button primary-cta">Contattaci Subito</a>
-                <a href="#" class="cta-button secondary-cta">Visualizza i Finanziamenti</a>
-            </div>
-        </section>
-
-        <footer>
-            <p>&copy; 2024 AutoVeloce Italia. Tutti i diritti riservati. Privacy | Cookie.</p>
-        </footer>
-
+    <div id="canvas-container">
+        <canvas id="flowCanvas"></canvas>
     </div>
 
+    <div class="content-spacer">
+        <h1>Scorri per vedere la corrente invisibile prendere vita!</h1>
+        <p>Il flusso elettrico si illumina progressivamente in base alla tua posizione di scroll.</p>
+        <h2>Scroll down!</h2>
+        </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
-    <script src="main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <script src="flow.js"></script> 
 </body>
 </html>
