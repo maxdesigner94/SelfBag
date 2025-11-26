@@ -1,14 +1,18 @@
+// js/navbar.js
+
+// Nota: GSAP e ScrollTrigger sono caricati globalmente in index.html
+
 document.addEventListener('DOMContentLoaded', () => {
     const header = document.getElementById('main-header');
     const navItems = document.querySelectorAll('.nav-item');
 
     // 1. Logica di Scroll per la Navbar (GSAP ScrollTrigger)
-    // Riduci il padding dell'header quando si scorre
     gsap.registerPlugin(ScrollTrigger);
 
     ScrollTrigger.create({
-        start: 'top -50', // Attiva l'azione dopo 50px di scroll
-        end: 99999,
+        trigger: 'body',
+        start: 'top -50', 
+        end: 'bottom',
         onToggle: self => {
             if (self.isActive) {
                 // Navbar "miniaturizzata"
@@ -28,34 +32,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 2. Logica dei Link Attivi (Simulazione di navigazione tra sezioni)
+    // 2. Logica dei Link Attivi e Notifica alla Scena 3D
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
 
-            // Rimuovi la classe 'active' da tutti i link
+            // Aggiorna classe 'active'
             navItems.forEach(link => link.classList.remove('active'));
-
-            // Aggiungi la classe 'active' al link cliccato
             item.classList.add('active');
 
-            // QUI IN FUTURO:
-            // - Si può usare GSAP per uno scroll fluido (scrollTo plugin)
-            // - Oppure si può notificare la scena 3D (tramite un Event Dispatcher)
-            //   di cambiare punto di vista o animazione in base alla sezione.
-            
+            // Invia un evento personalizzato alla logica 3D (main.js)
             const section = item.getAttribute('data-section');
-            console.log(`Navigazione alla sezione: ${section}. La scena 3D attiverà la sua animazione per questa sezione.`);
-
-            // Esempio: Invia un evento alla logica 3D
             const event = new CustomEvent('navigate3D', { detail: { section: section } });
             window.dispatchEvent(event);
+
+            // QUI IN FUTURO: GSAP.to(window, {scrollTo: `#${section}`}) per lo scroll
         });
     });
-
-    // Imposta 'Home' come attivo all'inizio
-    const homeLink = document.querySelector('[data-section="home"]');
-    if (homeLink) {
-        homeLink.classList.add('active');
-    }
 });
