@@ -310,16 +310,13 @@ document.addEventListener('DOMContentLoaded', () => {
         handle3DNavigation(section);
         
         // Scroll fluido alla sezione cliccata
+        // La sintassi è stata corretta per chiudere correttamente la chiamata a gsap.to
         gsap.to(window, { 
             scrollTo: `#${section}-section`, 
             duration: 1.5, 
             ease: "power2.inOut" 
         });
     });
-
-    // Avvia l'inizializzazione del WebGL
-    init();
-});
 
     // Avvia l'inizializzazione del WebGL
     init();
