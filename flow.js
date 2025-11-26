@@ -11,7 +11,7 @@ if (window.gsap && window.ScrollTrigger) {
     console.error("GSAP o ScrollTrigger non caricati correttamente.");
 }
 
-// Funzione per caricare il contenuto di un file shader esterno
+// Funzione per caricare il contenuto di un file shader esterno (NON MODIFICATO)
 async function loadShader(url) {
     const response = await fetch(url);
     if (!response.ok) {
@@ -20,13 +20,11 @@ async function loadShader(url) {
     return response.text();
 }
 
-// Funzione di inizializzazione principale
+// Funzione di inizializzazione principale (NON MODIFICATO)
 async function init() {
     try {
-        // Carica i contenuti degli shader
         const vertexShaderSource = await loadShader('./shaders/vertex.glsl');
         const fragmentShaderSource = await loadShader('./shaders/fragment.glsl');
-
         const canvas = document.getElementById('flowCanvas');
 
         // 1. Setup Base di Three.js
@@ -35,7 +33,6 @@ async function init() {
         renderer.setSize(window.innerWidth, window.innerHeight);
         scene = new THREE.Scene();
 
-        // Camera Ortografica per un effetto di overlay 2D
         const aspect = window.innerWidth / window.innerHeight;
         camera = new THREE.OrthographicCamera(-aspect, aspect, 1, -1, 0.1, 1000);
         camera.position.z = 1;
@@ -47,8 +44,8 @@ async function init() {
         // 3. Caricamento e Creazione della Geometria SVG 3D
         createSvg3DMesh(); 
 
-        // 4. Setup Sincronizzazione e Logica Interattiva
-        setupScrollSync();
+        // 4. Setup Sincronizzazione per il Piano (Subito disponibile)
+        setupScrollSyncFlowPlane(); // Chiamiamo subito la sync del piano e dell'HTML
 
         // 5. Gestione degli eventi
         window.addEventListener('resize', onWindowResize);
@@ -61,44 +58,44 @@ async function init() {
     }
 }
 
-// Crea il Materiale Shader Condiviso (NON MODIFICATO)
+// ... (createSharedShaderMaterial e createFlowMesh NON MODIFICATI) ...
+
 function createSharedShaderMaterial(vsSource, fsSource) {
     material = new THREE.ShaderMaterial({
         uniforms: {
             uTime: { value: 0.0 },
-            uScrollProgress: { value: 0.0 }, // 0.0 a 1.0
+            uScrollProgress: { value: 0.0 }, 
             uColor: { value: new THREE.Color(0x00ffff) } 
         },
         vertexShader: vsSource,
         fragmentShader: fsSource,
         transparent: true,
-        blending: THREE.AdditiveBlending, // Effetto glow/luce
+        blending: THREE.AdditiveBlending, 
         depthWrite: false 
     });
 }
 
-// Crea il Piano che copre tutto lo schermo per visualizzare l'effetto del flusso (NON MODIFICATO)
 function createFlowMesh(aspect) {
     const geometry = new THREE.PlaneGeometry(2 * aspect, 2, 64, 64);
-    flowMesh = new THREE.Mesh(geometry, material); // Applica il material condiviso
+    flowMesh = new THREE.Mesh(geometry, material); 
     scene.add(flowMesh);
 }
 
 
-// Crea l'oggetto SVG 3D (ExtrudeGeometry) - AGGIORNATO
+// Crea l'oggetto SVG 3D (ExtrudeGeometry) - MODIFICATO
 function createSvg3DMesh() {
     const loader = new THREE.SVGLoader();
     
-    // CARICA IL TUO NUOVO SVG (assicurati che il percorso sia corretto!)
+    // CARICA IL TUO NUOVO SVG
     loader.load('./models/svg/lightning.svg', function (data) {
         
         const paths = data.paths;
         svgMeshGroup = new THREE.Group();
         
-        svgMeshGroup.scale.set(0.005, -0.005, 0.005); // Scala e Inverti Y
+        svgMeshGroup.scale.set(0.005, -0.005, 0.005); 
 
         const extrudeSettings = {
-            depth: 0.1, // Profondità 3D
+            depth: 0.1, 
             bevelEnabled: true,
             bevelThickness: 0.05,
             bevelSize: 0.02,
@@ -114,7 +111,6 @@ function createSvg3DMesh() {
                 const shape = shapes[j];
                 const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
                 
-                // === CAMBIAMENTO QUI ===
                 // Applichiamo il material condiviso (il tuo shader di flusso) all'SVG 3D
                 const meshPart = new THREE.Mesh(geometry, material); 
                 svgMeshGroup.add(meshPart);
@@ -127,21 +123,28 @@ function createSvg3DMesh() {
         svgMeshGroup.rotation.y = Math.PI * 0.2; 
         
         scene.add(svgMeshGroup);
+        
+        // **********************************************
+        // CHIAMATA CRUCIALE: AVVIA LE ANIMAZIONI SVG QUI
+        // **********************************************
+        setupScrollSyncSvg(); 
+
     },
     // Gestore del progresso (opzionale)
     undefined, 
     // Gestore degli errori (cruciale)
     function (error) {
         console.error('Errore nel caricamento del SVG.', error);
-        console.warn("Assicurati che 'models/svg/lightning.svg' esista e sia accessibile. Errore di CORS potrebbe verificarsi se non è servito dalla stessa origine.");
+        console.warn("Assicurati che 'models/svg/lightning.svg' esista e sia accessibile.");
     });
 }
 
 
-function setupScrollSync() {
+// NUOVA FUNZIONE: Sincronizza solo gli elementi immediatamente disponibili (Piano e HTML)
+function setupScrollSyncFlowPlane() {
     const progressElement = document.getElementById('flow-progress');
 
-    // 1. Sincronizzazione 3D: Collega lo scroll VERTICALE all'uniform dello shader (NON MODIFICATO)
+    // 1. Sincronizzazione 3D del Piano
     gsap.to(material.uniforms.uScrollProgress, {
         value: 1.0, 
         scrollTrigger: {
@@ -151,7 +154,6 @@ function setupScrollSync() {
             scrub: true, 
             onUpdate: (self) => {
                 uScrollProgress = self.progress; 
-                // Aggiorna l'indicatore HTML
                 if (progressElement) {
                     progressElement.textContent = `${Math.round(uScrollProgress * 100)}%`;
                 }
@@ -159,7 +161,7 @@ function setupScrollSync() {
         }
     });
 
-    // 2. Sincronizzazione HTML: Animazione della Sezione di Attivazione (NON MODIFICATO)
+    // 2. Sincronizzazione HTML
     gsap.to("#activation-section .animated-text", {
         opacity: 1,
         y: 0, 
@@ -171,12 +173,14 @@ function setupScrollSync() {
             scrub: 1, 
         }
     });
-    
-    // 3. Animazione SVG in Scroll (NON MODIFICATO)
-    // Controlla che svgMeshGroup sia stato caricato
-    if (svgMeshGroup) { 
+}
+
+// NUOVA FUNZIONE: Sincronizza solo l'SVG dopo il suo caricamento
+function setupScrollSyncSvg() {
+    // 3. Animazione SVG in Scroll
+    if (svgMeshGroup) {
         gsap.to(svgMeshGroup.rotation, {
-            y: "+=" + Math.PI * 1, 
+            y: "+=" + Math.PI * 1, // Ruota di 180 gradi durante lo scroll
             scrollTrigger: {
                 trigger: "body",
                 start: "top top",
@@ -194,17 +198,15 @@ function setupScrollSync() {
                 scrub: true,
             }
         });
-    } else {
-        // Fallback se SVG non è ancora caricato, o non lo è affatto
-        console.warn("svgMeshGroup non è ancora disponibile per le animazioni GSAP. Assicurati che l'SVG sia caricato correttamente.");
-        // Puoi aggiungere un listener per quando l'SVG è pronto, o avvolgere GSAP in una Promise.
     }
 }
+
+
+// ... (onWindowResize e animate NON MODIFICATI) ...
 
 function onWindowResize() {
     const aspect = window.innerWidth / window.innerHeight;
     
-    // Aggiorna la telecamera
     camera.left = -aspect;
     camera.right = aspect;
     camera.top = 1;
@@ -213,7 +215,6 @@ function onWindowResize() {
     
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // Ricrea il piano del flusso per coprire la nuova dimensione
     if (flowMesh) {
         scene.remove(flowMesh);
         createFlowMesh(aspect);
@@ -223,14 +224,13 @@ function onWindowResize() {
 function animate(time) {
     requestAnimationFrame(animate);
 
-    // Aggiornamento dell'Uniform del Tempo
     uTime = time / 1000;
     if (material) {
         material.uniforms.uTime.value = uTime;
     }
     
     // Rotazione continua dell'SVG (per mostrarne la natura 3D)
-    if (svgMeshGroup) { // Controlla che svgMeshGroup esista
+    if (svgMeshGroup) { 
         svgMeshGroup.rotation.y += 0.001; 
     }
 
