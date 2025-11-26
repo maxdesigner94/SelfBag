@@ -53,4 +53,56 @@
     margin-top: 0;
 }
 
-/* ... Resto degli stili (content-spacer, animated-text, ecc.) non modificato ... */
+/* Sezioni di Contenuto (Tornano a scorrere in colonna) */
+.content-spacer { 
+    min-height: 100vh; /* Ogni sezione ha almeno 100vh di altezza */
+    padding: 20vh 5vw;
+    display: flex; /* Mantiene il contenuto centrato all'interno della sezione */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.intro-section {
+    min-height: 150vh; 
+}
+.final-section {
+    min-height: 50vh;
+}
+
+/* Stili per l'Animazione (Tornano a usare Y) */
+.animated-text {
+    opacity: 0;
+    transform: translateY(50px); /* Usiamo Y invece di X */
+    transition: none; 
+}
+.content-box {
+    max-width: 800px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+}
+
+.scroll-prompt {
+    margin-top: 50vh;
+    font-size: 1.2em;
+    color: var(--color-electric);
+    animation: pulse 1.5s infinite alternate;
+}
+
+.progress-indicator {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #aaa;
+}
+#flow-progress {
+    color: var(--color-electric);
+    font-weight: bold;
+}
+
+@keyframes pulse {
+    from { opacity: 0.4; }
+    to { opacity: 1.0; }
+}
