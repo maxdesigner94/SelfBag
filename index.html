@@ -8,6 +8,11 @@
 </head>
 <body>
 
+    <div id="loading-overlay">
+        <div class="loader-spinner"></div>
+        <p>Inizializzazione Scena 3D...</p>
+    </div>
+
     <div id="webgl-container"></div>
 
     <header id="main-header">
@@ -16,7 +21,7 @@
                 <span class="logo-3d">A</span>lpha**3D**
             </a>
             <ul class="nav-links">
-                <li><a href="#" data-section="home" class="nav-item">Home</a></li>
+                <li><a href="#" data-section="home" class="nav-item active">Home</a></li>
                 <li><a href="#" data-section="services" class="nav-item">Servizi</a></li>
                 <li><a href="#" data-section="portfolio" class="nav-item">Portfolio</a></li>
                 <li><a href="#" data-section="contact" class="nav-item">Contatti</a></li>
@@ -31,8 +36,8 @@
     <section id="hero-section" class="content-section">
         <div class="hero-content">
             <div class="hero-image-container">
-                <img src="assets/images/hero-placeholder.png" alt="Illustrazione futuristica" class="hero-image">
-                </div>
+                <div id="hero-3d-object-placeholder"></div>
+            </div>
             <div class="hero-text-container">
                 <h1 class="hero-title">Rivoluziona la tua Presenza Digitale con il 3D Interattivo</h1>
                 <p class="hero-description">Trasforma idee complesse in esperienze utente immersive e memorabili. Dalla progettazione UI/UX all'animazione WebGL, siamo il tuo partner per il futuro del web.</p>
@@ -43,14 +48,12 @@
             </div>
         </div>
     </section>
-    <div id="loading-overlay">
-        <p>Caricamento Scena 3D...</p>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
-    <script type="module" src="js/main.js"></script>
-    <script src="js/navbar.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js" defer></script>
+    
+    <script type="module" src="js/main.js" defer></script>
+    <script src="js/navbar.js" defer></script>
 </body>
 </html>
