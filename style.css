@@ -1,9 +1,18 @@
 /* Stili di Reset e Base */
+:root {
+    --color-electric: #00ffff;
+    --color-background: #000;
+}
 body { 
     margin: 0; 
     overflow-x: hidden; 
-    background-color: #000; 
-    font-family: Arial, sans-serif;
+    background-color: var(--color-background); 
+    font-family: 'Montserrat', Arial, sans-serif;
+    color: white;
+}
+main {
+    position: relative;
+    z-index: 20; /* Assicura che il contenuto sia sopra il canvas */
 }
 
 /* Contenitore del Canvas (Overlay Fisso) */
@@ -14,23 +23,63 @@ body {
     width: 100%;
     height: 100vh;
     z-index: 10; 
-    /* Cruciale: permette di interagire con gli elementi HTML sottostanti */
-    pointer-events: none; 
+    pointer-events: none; /* Permette il click sugli elementi HTML sottostanti */
 }
-
 canvas { 
     display: block; 
 }
 
-/* Spaziatore per forzare lo scroll e mostrare l'effetto */
+/* Stili delle Sezioni di Contenuto */
 .content-spacer { 
-    height: 300vh; /* Crea 3 volte l'altezza della viewport per scorrere */
-    background-color: #111; 
-    color: white; 
-    padding: 20vh 5vw; /* Padding per posizionare il contenuto */
-    line-height: 1.6;
+    min-height: 100vh; /* Ogni sezione ha almeno 100vh di altezza */
+    padding: 20vh 5vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.intro-section {
+    min-height: 150vh; /* Più spazio per l'inizio dello scroll */
+}
+.final-section {
+    min-height: 50vh;
 }
 
-.content-spacer h1, .content-spacer h2 {
-    margin-top: 50vh; /* Sposta il testo verso il basso */
+/* Stili per l'Animazione (Inizialmente invisibili o fuori schermo) */
+.animated-text {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: none; /* GSAP gestirà le transizioni */
+}
+.content-box {
+    max-width: 800px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+}
+
+.scroll-prompt {
+    margin-top: 50vh;
+    font-size: 1.2em;
+    color: var(--color-electric);
+    animation: pulse 1.5s infinite alternate;
+}
+
+.progress-indicator {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #aaa;
+}
+#flow-progress {
+    color: var(--color-electric);
+    font-weight: bold;
+}
+
+/* Animazione per il Prompt */
+@keyframes pulse {
+    from { opacity: 0.4; }
+    to { opacity: 1.0; }
 }
