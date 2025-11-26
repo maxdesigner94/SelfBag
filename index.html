@@ -3,49 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Flow State | Energia Digitale Interattiva</title>
-    <meta name="description" content="Sito interattivo che utilizza Three.js e Shader per visualizzare un flusso energetico dinamico sincronizzato con lo scroll verticale.">
-    <link rel="stylesheet" href="style.css"> 
+    <title>Effetto Corrente Elettrica con Scroll</title>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-    <div id="canvas-container">
-        <canvas id="flowCanvas"></canvas>
-    </div>
 
-    <main>
-        <section class="content-spacer hero-section" id="hero-flow">
-            <div class="hero-content-left">
-                <h1 class="seo-title">The Flow State: L'Energia del Digitale</h1>
-                <p>La nostra esperienza di 15 anni in SEO, UX/UI e WebGL si fonde in questa demo. Osserva come l'energia fluisce e attiva il design.</p>
-                
-                <div class="cta-button-group">
-                    <button class="cta-button primary">Scopri di Più</button>
-                    <button class="cta-button secondary">Contattaci</button>
-                </div>
+    <canvas id="flow-canvas"></canvas>
+
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="hero-image-container">
+                <svg id="electric-logo" viewBox="0 0 100 100" class="electric-bolt">
+                    <path d="M50 0 L40 35 L70 35 L60 65 L90 65 L45 100 L55 65 L25 65 Z" fill="#4B0082"/>
+                </svg>
             </div>
-            
-            <div class="hero-content-right">
-                </div>
-        </section>
-
-        <section id="activation-section" class="content-spacer">
-            <div class="content-box">
-                <h2 class="animated-text">Caricamento Completo</h2>
-                <p class="animated-text">Il flusso ha raggiunto questo punto. Questa sezione appare solo quando l'energia del flusso è attiva.</p>
-                <div class="progress-indicator">Posizione Flusso: <span id="flow-progress">0%</span></div>
+            <div class="hero-text">
+                <h1>L'Energia che non Vedi, la Senti</h1>
+                <p>Scorri per attivare il **Flusso Invisibile**. La nostra tecnologia elettrica si manifesta solo quando ne hai bisogno, guidata dal tuo movimento sulla pagina. Scopri l'efficienza invisibile.</p>
+                <div class="scroll-indicator">↓ Scorri in Basso ↓</div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="content-spacer final-section">
-            <h2>Fine del Percorso</h2>
-            <p>L'esperienza interattiva si conclude qui. Ritorna in cima per ricaricare.</p>
-        </section>
-    </main>
+    <section class="dummy-content">
+        <h2>Sezione Contenuto</h2>
+        <p>Questo spazio aggiuntivo è qui per creare un'altezza del documento sufficiente a generare l'evento di scorrimento e permettere di animare lo shader.</p>
+    </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js" defer></script>
-    
-    <script src="flow.js" defer></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="./js/main.js" type="module"></script>
 </body>
 </html>
