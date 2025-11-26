@@ -15,12 +15,12 @@ if (window.gsap && window.ScrollTrigger) {
 async function loadShader(url) {
     const response = await fetch(url);
     if (!response.ok) {
-        throw new Error(`Impossibile caricare lo shader da ${url}: ${response.statusText}`);
+        throw new Error(`Impossibile caricare lo shader da ${url}: ${err.statusText}`);
     }
     return response.text();
 }
 
-// Funzione di inizializzazione principale - MODIFICATA
+// Funzione di inizializzazione principale (NON MODIFICATO)
 async function init() {
     try {
         const vertexShaderSource = await loadShader('./shaders/vertex.glsl');
@@ -37,11 +37,11 @@ async function init() {
         camera = new THREE.OrthographicCamera(-aspect, aspect, 1, -1, 0.1, 1000);
         camera.position.z = 1;
 
-        // *** AGGIUNGIAMO LUCI PER GLI OGGETTI SOLIDI ***
-        const ambientLight = new THREE.AmbientLight(0x404040, 5); // Luce ambientale chiara
+        // *** AGGIUNGIAMO LUCI PER GLI OGGETTI SOLIDI *** (NON MODIFICATO)
+        const ambientLight = new THREE.AmbientLight(0x404040, 5); 
         scene.add(ambientLight);
         
-        const pointLight = new THREE.PointLight(0xffffff, 50); // Luce puntiforme
+        const pointLight = new THREE.PointLight(0xffffff, 50); 
         pointLight.position.set(5, 5, 5);
         scene.add(pointLight);
 
@@ -50,7 +50,7 @@ async function init() {
         createSharedShaderMaterial(vertexShaderSource, fragmentShaderSource);
         
         createFlowMesh(aspect); 
-        createHero3DObject(); // Usa MeshPhongMaterial e sarà visibile grazie alle luci
+        createHero3DObject(); 
 
         // 3. Setup Sincronizzazione
         setupScrollSync(); 
@@ -90,25 +90,21 @@ function createFlowMesh(aspect) {
 }
 
 
-// NUOVA FUNZIONE: Crea un oggetto 3D separato per la Hero Section - MODIFICATA
+// Crea un oggetto 3D separato per la Hero Section (NON MODIFICATO)
 function createHero3DObject() {
-    // Usiamo una BoxGeometry e la rotiamo per simulare una forma energetica complessa
     const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.1); 
     
-    // *** CAMBIAMENTO CRUCIALE: Usiamo MeshPhongMaterial per un oggetto solido e ben illuminato ***
     const heroMaterial = new THREE.MeshPhongMaterial({
-        color: 0x00eeee, // Colore solido elettrico (visibile)
-        emissive: 0x003333, // Leggero bagliore proprio
-        specular: 0x00ffff, // Punti luce bianchi
-        shininess: 100 // Molto lucido
+        color: 0x00eeee, 
+        emissive: 0x003333, 
+        specular: 0x00ffff, 
+        shininess: 100 
     });
     
     threeDObject = new THREE.Mesh(geometry, heroMaterial); 
     
-    // Posizionamento
     threeDObject.position.set(0.6, 0.0, 0.1); 
     
-    // Rotazione iniziale (per mostrare che è 3D fin da subito)
     threeDObject.rotation.x = Math.PI * 0.25; 
     threeDObject.rotation.y = Math.PI * 0.25;
     
@@ -116,11 +112,11 @@ function createHero3DObject() {
 }
 
 
-// Funzione di Sincronizzazione (NON MODIFICATA)
+// Funzione di Sincronizzazione - MODIFICATA
 function setupScrollSync() {
     const progressElement = document.getElementById('flow-progress');
 
-    // 1. Sincronizzazione 3D del Piano (Flusso)
+    // 1. Sincronizzazione 3D del Piano (Flusso) - NON MODIFICATO
     gsap.to(material.uniforms.uScrollProgress, {
         value: 1.0, 
         scrollTrigger: {
@@ -137,7 +133,7 @@ function setupScrollSync() {
         }
     });
 
-    // 2. Animazione continua dell'Oggetto Hero 3D con GSAP
+    // 2. Animazione continua dell'Oggetto Hero 3D con GSAP - NON MODIFICATO
     gsap.to(threeDObject.rotation, {
         z: Math.PI * 2, 
         duration: 20,
@@ -145,7 +141,19 @@ function setupScrollSync() {
         ease: "none"
     });
     
-    // 3. Sincronizzazione HTML
+    // RIMOZIONE CRUCIALE: Ho rimosso il codice GSAP che animava la posizione Y
+    /* gsap.to(threeDObject.position, {
+        y: -0.1, 
+        scrollTrigger: {
+            trigger: "#hero-flow",
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+        }
+    }); 
+    */ 
+    
+    // 3. Sincronizzazione HTML - NON MODIFICATO
     gsap.to("#activation-section .animated-text", {
         opacity: 1,
         y: 0, 
@@ -177,7 +185,7 @@ function onWindowResize() {
     }
 }
 
-// Funzione Animate - MODIFICATA
+// Funzione Animate (Rotazione X costante) - NON MODIFICATO
 function animate(time) {
     requestAnimationFrame(animate);
 
@@ -186,9 +194,8 @@ function animate(time) {
         material.uniforms.uTime.value = uTime;
     }
     
-    // Rotazione costante per un effetto dinamico (oltre alla rotazione Z di GSAP)
     if (threeDObject) {
-        threeDObject.rotation.x += 0.005; // Rotazione lenta sull'asse X
+        threeDObject.rotation.x += 0.005; 
     }
 
     renderer.render(scene, camera);
