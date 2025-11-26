@@ -1,67 +1,50 @@
-// Necessario per la precisione di calcolo
-precision highp float;
+// shaders/fragment.glsl
 
-// Uniforms 
 uniform float uTime;
-uniform float uScrollProgress; // Valore 0.0 (cima) a 1.0 (fondo)
-uniform vec3 uColor;
+uniform float uScrollProgress;
+uniform vec3 uFlowColor;
 
-// Variabile 
-varying vec2 vUv; // Coordinate da 0.0 (basso, sinistra) a 1.0 (alto, destra)
+varying vec2 vUv;
+varying float vProgress; // Progresso lungo l'asse X della geometria
+
+// Funzione per il calcolo del rumore
+float random (in vec2 st) {
+    return fract(sin(dot(st.xy,
+                         vec2(12.9898,78.233)))
+                 * 43758.5453123);
+}
 
 void main() {
-    // === 1. Definizione della Banda Verticale Fissa (Posizione Orizzontale) ===
+    // 1. Definisci la zona di flusso basata sullo scroll
+    // Il flusso è una banda che si muove lungo la geometria (vProgress)
+    float flowWidth = 0.2; // Larghezza della banda luminosa
+    float flowPosition = uScrollProgress * 2.0; // Moltiplica per far scorrere il flusso lungo il percorso
+
+    // Funzione triangolare per una zona centrale più luminosa
+    float flowIntensity = 1.0 - abs(vProgress - flowPosition) / flowWidth;
     
-    // Posizione orizzontale della banda (e.g., al centro dello schermo)
-    float bandPositionX = 0.5; // 0.5 è il centro, 0.0 è sinistra, 1.0 è destra
+    // Aggiungi un piccolo offset basato sul tempo per far "vibrare" il flusso
+    flowIntensity += sin(vProgress * 15.0 + uTime * 5.0) * 0.1;
+
+    // 2. Aggiungi il rumore (scintillio)
+    float sparkle = random(vUv * 50.0 + uTime * 0.5) * 0.3;
     
-    // Spessore della banda
-    float bandThickness = 0.01; 
+    // 3. Calcola l'opacità e il colore finale
+    float glow = max(0.0, flowIntensity);
+    glow = pow(glow, 5.0); // Potenza per un effetto di glow più intenso e focalizzato
+
+    // Il flusso ha un'opacità minima, visibile solo quando glow > 0
+    float opacity = clamp(glow + sparkle, 0.0, 1.0);
     
-    // Calcola la distanza orizzontale del pixel corrente dal centro della banda.
-    float distanceX = abs(vUv.x - bandPositionX);
-    
-    // 'bandMask' è l'intensità base (0.0 o 1.0) che definisce dove si trova la banda.
-    // Usiamo smoothstep per dare un leggero fading ai bordi orizzontali della linea.
-    float bandMask = smoothstep(bandThickness, 0.0, distanceX);
+    vec3 finalColor = uFlowColor * (glow * 1.5 + sparkle * 0.5);
 
-    // === 2. Illuminazione Progressiva Verticale (Basata sullo Scroll) ===
+    // Bordo morbido per l'effetto glow
+    float edge = 1.0 - smoothstep(0.4, 0.5, abs(vUv.y - 0.5) * 2.0);
+    opacity *= edge;
+    finalColor *= edge;
 
-    // targetY è la posizione verticale raggiunta dallo scroll.
-    // Invertiamo uScrollProgress: 0.0 scroll -> targetY 1.0 (cima); 1.0 scroll -> targetY 0.0 (fondo).
-    float targetY = 1.0 - uScrollProgress; 
+    gl_FragColor = vec4(finalColor, opacity);
 
-    // Calcolo dell'intensità di illuminazione progressiva (Scia)
-    // L'area sopra targetY sarà illuminata. 0.4 definisce l'ampiezza del fading.
-    float lightProgress = smoothstep(targetY - 0.4, targetY, vUv.y);
-
-    // === 3. Creazione del Picco Luminoso di Transizione (Onda che scende) ===
-    
-    // Picco luminoso sulla linea di confine dello scroll (waveThickness stretto)
-    float waveThickness = 0.01; 
-    float distanceToEdgeY = abs(vUv.y - targetY);
-    float waveGlow = smoothstep(waveThickness, 0.0, distanceToEdgeY);
-
-    // === 4. Combinazione Finale ===
-
-    // Moltiplichiamo la maschera verticale fissa (bandMask) con la progressione di illuminazione (lightProgress).
-    // Questo garantisce che l'illuminazione avvenga SOLO all'interno della banda verticale.
-    float combinedIntensity = bandMask * max(lightProgress, waveGlow * 1.5); 
-    
-    // Modulazione per la Pulsazione (Mantenuta per dinamismo)
-    float pulse = (sin(uTime * 1.5) * 0.1) + 0.9; 
-
-    // Applicazione del glow e della pulsazione
-    float finalGlow = combinedIntensity * 2.0 * pulse; 
-
-    // 5. Output
-    float alpha = finalGlow * 0.9; 
-
-    // Ottimizzazione
-    if (alpha < 0.001) {
-        discard; 
-    }
-
-    // Colore finale 
-    gl_FragColor = vec4(uColor * finalGlow, alpha);
+    // Opzione per un effetto additivo (per un glow più luminoso)
+    // gl_FragColor = vec4(finalColor * opacity, opacity);
 }
