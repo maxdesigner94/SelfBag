@@ -1,6 +1,14 @@
-let scene, camera, renderer, material, geometry, mesh;
+// Variabili globali per Three.js
+let scene, camera, renderer, material, mesh;
 let uScrollProgress = 0.0;
 let uTime = 0.0;
+
+// Registra i plugin di GSAP
+if (window.gsap && window.ScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+} else {
+    console.error("GSAP o ScrollTrigger non caricati correttamente.");
+}
 
 // Funzione per caricare il contenuto di un file shader esterno
 async function loadShader(url) {
@@ -20,55 +28,89 @@ async function init() {
 
         const canvas = document.getElementById('flowCanvas');
 
-        // 1. Inizializzazione Renderer
+        // Setup Base di Three.js
         renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
 
-        // 2. Inizializzazione Scena
         scene = new THREE.Scene();
 
-        // 3. Inizializzazione Telecamera Ortografica
+        // Camera Ortografica per un effetto di overlay 2D
         const aspect = window.innerWidth / window.innerHeight;
-        // La telecamera coprirà l'area da -aspect a +aspect (larghezza) e da -1 a +1 (altezza)
         camera = new THREE.OrthographicCamera(-aspect, aspect, 1, -1, 0.1, 1000);
         camera.position.z = 1;
 
-        // 4. Creazione dell'Oggetto
+        // Creazione dell'Oggetto 3D
         createFlowMesh(vertexShaderSource, fragmentShaderSource);
 
-        // 5. Gestione degli eventi
+        // Setup Sincronizzazione e Logica Interattiva
+        setupScrollSync();
+
+        // Gestione degli eventi
         window.addEventListener('resize', onWindowResize);
-        window.addEventListener('scroll', onScroll, { passive: true });
 
         // Inizio del Loop di Animazione
         animate();
 
     } catch (error) {
-        console.error("Errore durante l'inizializzazione:", error);
+        console.error("Errore durante l'inizializzazione del progetto:", error);
     }
 }
 
 function createFlowMesh(vsSource, fsSource) {
-    // Geometria: un semplice piano che copre l'area visibile
+    // Geometria Semplice (Piano) che copre l'area visibile
     const aspect = window.innerWidth / window.innerHeight;
-    geometry = new THREE.PlaneGeometry(2 * aspect, 2, 64, 64);
+    const geometry = new THREE.PlaneGeometry(2 * aspect, 2, 64, 64);
 
-    // Materiale: ShaderMaterial
     material = new THREE.ShaderMaterial({
         uniforms: {
             uTime: { value: 0.0 },
-            uScrollProgress: { value: 0.0 },
-            uColor: { value: new THREE.Color(0x00ffff) } // Blu elettrico
+            uScrollProgress: { value: 0.0 }, // 0.0 a 1.0
+            uColor: { value: new THREE.Color(0x00ffff) } 
         },
         vertexShader: vsSource,
         fragmentShader: fsSource,
         transparent: true,
-        blending: THREE.AdditiveBlending,
+        blending: THREE.AdditiveBlending, // Effetto glow/luce
     });
 
     mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
+}
+
+function setupScrollSync() {
+    // 1. Sincronizzazione 3D: Collega lo scroll (0-100%) all'uniform dello shader
+    gsap.to(material.uniforms.uScrollProgress, {
+        value: 1.0, 
+        scrollTrigger: {
+            trigger: "body",
+            start: "top top",
+            end: "bottom bottom",
+            scrub: true, // Sincronizzazione fluida
+            onUpdate: (self) => {
+                // Aggiorna il valore globale (usato per debug/HTML)
+                uScrollProgress = self.progress; 
+                // Aggiorna l'indicatore HTML
+                const progressElement = document.getElementById('flow-progress');
+                if (progressElement) {
+                    progressElement.textContent = `${Math.round(uScrollProgress * 100)}%`;
+                }
+            }
+        }
+    });
+
+    // 2. Sincronizzazione HTML: Animazione della Sezione di Attivazione
+    gsap.to("#activation-section .animated-text", {
+        opacity: 1,
+        y: 0,
+        stagger: 0.1, // Applica l'animazione con un leggero ritardo tra gli elementi
+        scrollTrigger: {
+            trigger: "#activation-section",
+            start: "top 70%", // Inizia quando la sezione entra in vista
+            end: "center 30%",
+            scrub: 1, // Smoothing di 1 secondo
+        }
+    });
 }
 
 function onWindowResize() {
@@ -79,22 +121,11 @@ function onWindowResize() {
     camera.bottom = -1;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    
-    // Potrebbe essere necessario aggiornare la geometria del piano se si usa una camera ortografica
+
+    // Ricrea la geometria per assicurare che copra correttamente la viewport
     if (mesh) {
         scene.remove(mesh);
-        createFlowMesh(material.vertexShader, material.fragmentShader); // Ricrea la mesh con la nuova proporzione
-    }
-}
-
-function onScroll() {
-    // Calcola la percentuale di scorrimento (0.0 a 1.0)
-    const scrollMax = document.body.scrollHeight - window.innerHeight;
-    uScrollProgress = scrollMax > 0 ? window.scrollY / scrollMax : 0;
-    
-    // Aggiorna l'uniform
-    if (material) {
-        material.uniforms.uScrollProgress.value = uScrollProgress;
+        createFlowMesh(material.vertexShader, material.fragmentShader);
     }
 }
 
@@ -110,5 +141,5 @@ function animate(time) {
     renderer.render(scene, camera);
 }
 
-// Avvia l'app al caricamento del DOM
+// Avvia l'app quando il DOM è pronto (grazie all'attributo defer, si può usare subito)
 document.addEventListener('DOMContentLoaded', init);
