@@ -1,8 +1,8 @@
 :root {
-    --electric-blue-dark: #000033; /* Blu scuro quasi nero */
-    --electric-blue-light: #2c3e50; /* Sfondo scuro per contrasto */
-    --electric-glow: #00FFFF; /* Ciano brillante per l'effetto glow */
-    --flash-color: #4B0082; /* Viola intenso come colore base del sito (da flashimpianti.netlify.app) */
+    --electric-blue-dark: #000033;
+    --electric-blue-light: #2c3e50;
+    --electric-glow: #00FFFF;
+    --flash-color: #4B0082;
     --text-color: #f0f0f0;
 }
 
@@ -26,13 +26,13 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 0; /* Dietro il contenuto del sito */
+    z-index: 0;
 }
 
 /* Contenuto in Primo Piano */
 .hero-section {
     position: relative;
-    z-index: 1; /* Sopra il canvas */
+    z-index: 1;
     height: 100vh;
     display: flex;
     align-items: center;
@@ -96,7 +96,7 @@ body {
 .dummy-content {
     position: relative;
     z-index: 1;
-    min-height: 200vh; /* Aumenta l'altezza per lo scroll */
+    min-height: 200vh;
     padding: 50px;
     background-color: var(--electric-blue-dark);
 }
