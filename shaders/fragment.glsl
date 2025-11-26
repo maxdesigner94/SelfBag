@@ -5,7 +5,7 @@ uniform float uScrollProgress;
 uniform vec3 uFlowColor;
 
 varying vec2 vUv;
-varying float vProgress; 
+varying float vProgress; // Progresso lungo il tubo (0.0 a 1.0)
 
 // Funzione per il calcolo del rumore
 float random (in vec2 st) {
@@ -15,32 +15,41 @@ float random (in vec2 st) {
 }
 
 void main() {
+    float normalizedProgress = vProgress; 
+
     // 1. Definisci la zona di flusso basata sullo scroll
-    float flowWidth = 0.2; 
-    float flowPosition = uScrollProgress * 2.0; 
+    float flowWidth = 0.1; // Larghezza del fascio
+    float flowPosition = uScrollProgress; 
 
-    // Funzione triangolare per una zona centrale più luminosa
-    float flowIntensity = 1.0 - abs(vProgress - flowPosition) / flowWidth;
+    // Calcolo della distanza dal centro del fascio
+    float distToFlow = abs(normalizedProgress - flowPosition);
     
-    // Aggiungi un piccolo offset basato sul tempo per far "vibrare" il flusso
-    flowIntensity += sin(vProgress * 15.0 + uTime * 5.0) * 0.1;
+    // 2. Calcolo dell'intensità (il nucleo illuminato)
+    float flowIntensity = 1.0 - smoothstep(0.0, flowWidth, distToFlow);
+    
+    // Aggiungi vibrazione dinamica
+    flowIntensity += sin(normalizedProgress * 50.0 + uTime * 10.0) * 0.1;
 
-    // 2. Aggiungi il rumore (scintillio)
-    float sparkle = random(vUv * 50.0 + uTime * 0.5) * 0.3;
+    // 3. Aggiungi il rumore (scintillio)
+    float sparkle = random(vUv * 50.0 + uTime * 0.5); 
     
-    // 3. Calcola l'opacità e il colore finale
+    // 4. Calcola l'opacità e il colore finale
     float glow = max(0.0, flowIntensity);
-    glow = pow(glow, 5.0); 
+    glow = pow(glow, 15.0); // Potenza molto alta per focalizzare il glow e renderlo invisibile altrove
 
-    // Il flusso ha un'opacità minima, visibile solo quando glow > 0
-    float opacity = clamp(glow + sparkle, 0.0, 1.0);
+    float opacity = clamp(glow + sparkle * 0.1, 0.0, 1.0);
     
-    vec3 finalColor = uFlowColor * (glow * 1.5 + sparkle * 0.5);
+    vec3 finalColor = uFlowColor * (glow * 4.0 + sparkle * 0.5);
 
-    // Bordo morbido per l'effetto glow (se il tubo è spesso, si vuole che la luce sia al centro)
+    // Bordo morbido (glow sul profilo del tubo)
     float edge = 1.0 - smoothstep(0.4, 0.5, abs(vUv.y - 0.5) * 2.0);
     opacity *= edge;
     finalColor *= edge;
+
+    // Rimuovi i pixel totalmente trasparenti per garantire l'invisibilità
+    if (opacity < 0.01) { 
+        discard;
+    }
 
     gl_FragColor = vec4(finalColor, opacity);
 }
