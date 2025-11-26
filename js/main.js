@@ -1,9 +1,9 @@
 // js/main.js
 
-import * as THREE from 'three';
+// THREE è ora disponibile globalmente grazie allo script CDN in index.html
 
-// Carica gli shader
 const loadShaders = async (vertexPath, fragmentPath) => {
+    // Il resto del codice fetch rimane lo stesso
     const vertex = await fetch(vertexPath).then(res => res.text());
     const fragment = await fetch(fragmentPath).then(res => res.text());
     return { vertex, fragment };
@@ -21,12 +21,12 @@ const init = async () => {
     
     const renderer = new THREE.WebGLRenderer({ 
         canvas: canvas, 
-        alpha: true, // Importante per la trasparenza dello sfondo
+        alpha: true, 
         antialias: true 
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setClearColor(0x000000, 0); // Sfondo trasparente
+    renderer.setClearColor(0x000000, 0); 
 
     camera.position.z = 5;
 
@@ -44,11 +44,11 @@ const init = async () => {
         vertexShader: vertex,
         fragmentShader: fragment,
         transparent: true,
-        blending: THREE.AdditiveBlending, // Effetto glow più intenso
+        blending: THREE.AdditiveBlending, 
         depthWrite: false,
     });
 
-    // A. Geometria del Flusso: Creiamo una curva complessa (Line Curve)
+    // A. Geometria del Flusso: Creiamo una curva complessa
     const points = [
         new THREE.Vector3(-3, 1.5, 0),
         new THREE.Vector3(-2, 0, 0),
@@ -58,13 +58,13 @@ const init = async () => {
     ];
     const curve = new THREE.CatmullRomCurve3(points);
 
-    // Usiamo TubeGeometry per dare volume e luce al flusso
-    const geometry = new THREE.TubeGeometry(curve, 64, 0.05, 8, false); // path, segments, radius, radialSegments, closed
+    // Usiamo TubeGeometry
+    const geometry = new THREE.TubeGeometry(curve, 64, 0.05, 8, false); 
 
     const flowMesh = new THREE.Mesh(geometry, shaderMaterial);
     scene.add(flowMesh);
 
-    // 3. Sincronizzazione con lo Scroll (GSAP/Logica Custom)
+    // 3. Sincronizzazione con lo Scroll 
     let scrollPercentage = 0;
     
     const calculateScrollPercentage = () => {
@@ -86,7 +86,7 @@ const init = async () => {
     const animate = () => {
         requestAnimationFrame(animate);
 
-        // Aggiorna uTime per l'animazione pulsante/scintillante
+        // Aggiorna uTime
         uniforms.uTime.value = clock.getElapsedTime();
 
         renderer.render(scene, camera);
@@ -97,7 +97,7 @@ const init = async () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
-        calculateScrollPercentage(); // Ricalcola dopo il ridimensionamento
+        calculateScrollPercentage(); 
     };
 
     window.addEventListener('resize', onWindowResize);
