@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Flow State | Energia Digitale Interattiva</title>
-    <meta name="description" content="Sito interattivo che utilizza Three.js e Shader per visualizzare un flusso energetico dinamico sincronizzato con lo scroll.">
+    <meta name="description" content="Sito interattivo che utilizza Three.js e Shader per visualizzare un flusso energetico dinamico sincronizzato con lo scroll verticale.">
     <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
@@ -13,16 +13,24 @@
     </div>
 
     <main>
-        <section class="content-spacer intro-section">
-            <h1 class="seo-title">The Flow State: L'Energia del Digitale</h1>
-            <p>Scrolla per attivare la corrente invisibile. La tua azione innesca il rilascio di energia.</p>
-            <div class="scroll-prompt">SCROLL DOWN</div>
+        <section class="content-spacer hero-section" id="hero-flow">
+            <div class="hero-content-left">
+                <h1 class="seo-title">L'Arte della Sincronia Digitale</h1>
+                <p>La nostra esperienza di 15 anni in SEO, UX/UI e WebGL si fonde in questa demo. Osserva come l'energia fluisce e attiva il design.</p>
+                <button class="cta-button">Scopri di Più</button>
+            </div>
+            
+            <div class="hero-content-right">
+                <div class="svg-3d-placeholder">
+                    <div class="scroll-prompt">SCROLL DOWN</div>
+                </div>
+            </div>
         </section>
 
         <section id="activation-section" class="content-spacer">
             <div class="content-box">
                 <h2 class="animated-text">Caricamento Completo</h2>
-                <p class="animated-text">Il flusso ha raggiunto questo punto. Siamo esperti in UX/UI, SEO e WebGL. Questa sezione appare solo quando l'energia del flusso è attiva.</p>
+                <p class="animated-text">Il flusso ha raggiunto questo punto. Questa sezione appare solo quando l'energia del flusso è attiva.</p>
                 <div class="progress-indicator">Posizione Flusso: <span id="flow-progress">0%</span></div>
             </div>
         </section>
@@ -36,6 +44,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js" defer></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/SVGLoader.js" defer></script>
 
     <script src="flow.js" defer></script> 
 </body>
