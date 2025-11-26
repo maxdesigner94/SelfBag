@@ -3,28 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landing Page 3D Interattiva</title>
+    <title>3D Ultra-Modern Landing Page</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="webgl-container"></div>
 
-    <nav id="main-navbar">
-        <a href="#home" class="nav-item logo">LOGO 3D</a>
-        <div class="nav-links">
-            <a href="#servizi" class="nav-item">Servizi</a>
-            <a href="#progetti" class="nav-item">Progetti</a>
-            <a href="#contatti" class="nav-item">Contatti</a>
+    <header id="main-header">
+        <nav class="navbar">
+            <a href="#" class="logo">
+                <span class="logo-3d">A</span>lpha**3D**
+            </a>
+            <ul class="nav-links">
+                <li><a href="#" data-section="home" class="nav-item">Home</a></li>
+                <li><a href="#" data-section="services" class="nav-item">Servizi</a></li>
+                <li><a href="#" data-section="portfolio" class="nav-item">Portfolio</a></li>
+                <li><a href="#" data-section="contact" class="nav-item">Contatti</a></li>
+            </ul>
+        </nav>
+        <div class="menu-toggle">
+            <div class="bar"></div>
+            <div class="bar"></div>
         </div>
-        <div class="nav-cta">
-            <button class="cta-button">Inizia Ora</button>
-        </div>
-    </nav>
+    </header>
 
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <div id="loading-overlay">
+        <p>Caricamento Scena 3D...</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script> 
-    <script src="main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <script src="js/navbar.js"></script>
 </body>
 </html>
