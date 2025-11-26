@@ -17,7 +17,7 @@ main {
     z-index: 20; 
 }
 
-/* Contenitore del Canvas (Overlay Fisso) */
+/* Contenitore del Canvas: Overlay Fisso */
 #canvas-container {
     position: fixed;
     top: 0;
@@ -62,7 +62,6 @@ canvas {
 .hero-content-right {
     height: 80vh; 
     position: relative;
-    /* L'oggetto 3D sarà posizionato qui dal JS */
 }
 
 /* Sezioni che seguono */
@@ -80,7 +79,7 @@ canvas {
 .cta-button-group {
     margin-top: 25px;
     display: flex;
-    gap: 15px; /* Spazio tra i bottoni */
+    gap: 15px; 
 }
 
 /* Stili Base per tutti i bottoni */
@@ -131,8 +130,6 @@ canvas {
     box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
 }
 
-/* Rimosso: scroll-prompt */
-
 .progress-indicator {
     margin-top: 20px;
     font-size: 0.9em;
@@ -158,8 +155,5 @@ canvas {
     }
     .hero-content-right {
         height: 50vh; 
-    }
-    .intro-section {
-        min-height: auto; /* Rimosso l'altezza forzata */
     }
 }
