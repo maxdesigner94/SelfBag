@@ -1,65 +1,150 @@
-/* style.css */
-body {
+/* Reset Base */
+* {
     margin: 0;
-    overflow: hidden; /* Importante per una scena fullscreen */
-    font-family: sans-serif;
-    color: white; /* I colori saranno dominati dalla scena 3D */
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* Contenitore WebGL fullscreen */
+:root {
+    --color-primary: #00ffff; /* Ciano brillante per accenti */
+    --color-bg: #03001e;      /* Sfondo molto scuro, quasi nero */
+    --color-text: #e0e0e0;    /* Testo chiaro */
+    --font-family-sans: 'Helvetica Neue', sans-serif;
+}
+
+body {
+    font-family: var(--font-family-sans);
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    overflow-x: hidden; /* Evita scroll orizzontale */
+}
+
+/* Contenitore WebGL a Schermo Intero */
 #webgl-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
+    z-index: 1; /* Sotto l'header */
 }
 
-/* Navbar come overlay */
-#main-navbar {
-    position: absolute;
+/* ====================================
+   NAVBAR STYLES
+   ==================================== */
+
+#main-header {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 10; /* Deve stare sopra la scena 3D */
+    z-index: 100; /* Davanti a tutto */
+    padding: 20px 50px;
+    /* Effetto 'vetro' o 'futuristico' con leggero sfondo e bordo */
+    background: rgba(3, 0, 30, 0.6); /* Sfondo scuro e semi-trasparente */
+    backdrop-filter: blur(5px);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    transition: background 0.3s ease, padding 0.3s ease;
+}
+
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 50px;
-    background: transparent; /* L'effetto "vetro" o "sfocato" sarà applicato al 3D */
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Logo */
+.logo {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: var(--color-text);
+    text-decoration: none;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.logo-3d {
+    color: var(--color-primary);
+    text-shadow: 0 0 10px var(--color-primary); /* Bagliore futuristico */
+}
+
+.logo:hover .logo-3d {
+    color: white;
+    text-shadow: 0 0 15px var(--color-primary), 0 0 25px var(--color-primary);
+}
+
+/* Link di Navigazione */
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-links li {
+    margin-left: 40px;
 }
 
 .nav-item {
-    color: #ffffff;
     text-decoration: none;
-    margin-left: 30px;
-    font-size: 1.1em;
+    color: var(--color-text);
+    font-size: 1em;
     font-weight: 500;
-    transition: color 0.3s;
+    position: relative;
+    padding: 5px 0;
+    transition: color 0.3s ease;
+}
+
+/* Animazione Sottolineatura 3D/Olografica */
+.nav-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: var(--color-primary);
+    box-shadow: 0 0 5px var(--color-primary), 0 0 10px var(--color-primary);
+    transition: width 0.3s ease, left 0.3s ease;
 }
 
 .nav-item:hover {
-    color: #00ffc4; /* Tonalità neon per un look moderno */
+    color: var(--color-primary);
 }
 
-.logo {
-    font-size: 1.4em;
-    font-weight: bold;
+.nav-item:hover::after,
+.nav-item.active::after {
+    width: 100%;
+    left: 0;
 }
 
-.cta-button {
-    background-color: #00ffc4;
-    color: #0d0d0d;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+/* Mobile Menu Toggle (nascosto su desktop) */
+.menu-toggle {
+    display: none;
     cursor: pointer;
-    font-weight: bold;
-    transition: all 0.3s;
 }
 
-.cta-button:hover {
-    background-color: #00cc99;
-    box-shadow: 0 0 10px #00ffc4;
+/* Overlay di caricamento (UX) */
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-bg);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    opacity: 1;
+    transition: opacity 1s ease;
 }
+
+#loading-overlay.hidden {
+    opacity: 0;
+    pointer-events: none; /* Rimuove la possibilità di interazione dopo l'animazione */
+}
+
+/* Aggiungi media query per la responsività */
+/* ... (omesso per brevità, ma essenziale in un progetto reale) */
