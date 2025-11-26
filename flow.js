@@ -61,7 +61,7 @@ async function init() {
     }
 }
 
-// Crea il Materiale Shader Condiviso
+// Crea il Materiale Shader Condiviso (NON MODIFICATO)
 function createSharedShaderMaterial(vsSource, fsSource) {
     material = new THREE.ShaderMaterial({
         uniforms: {
@@ -73,36 +73,29 @@ function createSharedShaderMaterial(vsSource, fsSource) {
         fragmentShader: fsSource,
         transparent: true,
         blending: THREE.AdditiveBlending, // Effetto glow/luce
-        depthWrite: false // Ottimizzazione: non scrive nel depth buffer
+        depthWrite: false 
     });
 }
 
-// Crea il Piano che copre tutto lo schermo per visualizzare l'effetto del flusso
+// Crea il Piano che copre tutto lo schermo per visualizzare l'effetto del flusso (NON MODIFICATO)
 function createFlowMesh(aspect) {
     const geometry = new THREE.PlaneGeometry(2 * aspect, 2, 64, 64);
-    flowMesh = new THREE.Mesh(geometry, material);
+    flowMesh = new THREE.Mesh(geometry, material); // Applica il material condiviso
     scene.add(flowMesh);
 }
 
 
-// Crea l'oggetto SVG 3D (ExtrudeGeometry)
+// Crea l'oggetto SVG 3D (ExtrudeGeometry) - AGGIORNATO
 function createSvg3DMesh() {
     const loader = new THREE.SVGLoader();
     
-    // Esempio SVG (Sostituire con il proprio percorso o stringa SVG)
-    // Usiamo il logo Three.js (semplificato) per un esempio di extrusione
-    loader.load('./models/svg/example.svg' , function (data) {
-    // Nota: Il path sopra è un placeholder. Per test locali, potresti dover usare un file
-    // SVG locale o il percorso completo di una risorsa esterna.
-    // In questo esempio, useremo un SVG noto da mrdoob per garantire il funzionamento del loader
-    // Se non hai un file .svg nel progetto, DEVI usare un esempio noto:
-    // loader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/svg/threejs.svg', function (data) {
+    // CARICA IL TUO NUOVO SVG (assicurati che il percorso sia corretto!)
+    loader.load('./models/svg/lightning.svg', function (data) {
         
         const paths = data.paths;
         svgMeshGroup = new THREE.Group();
         
-        // La scala e l'inversione Y sono tipiche del caricamento SVG in Three.js
-        svgMeshGroup.scale.set(0.005, -0.005, 0.005); 
+        svgMeshGroup.scale.set(0.005, -0.005, 0.005); // Scala e Inverti Y
 
         const extrudeSettings = {
             depth: 0.1, // Profondità 3D
@@ -121,22 +114,15 @@ function createSvg3DMesh() {
                 const shape = shapes[j];
                 const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
                 
-                // Usiamo un materiale semplice per la mesh SVG, non lo shader di flusso
-                // Lo shader di flusso viene applicato al piano (flowMesh)
-                const basicMaterial = new THREE.MeshBasicMaterial({ 
-                    color: 0xcccccc, 
-                    side: THREE.DoubleSide,
-                    opacity: 0.5,
-                    transparent: true
-                });
-                
-                const meshPart = new THREE.Mesh(geometry, basicMaterial); 
+                // === CAMBIAMENTO QUI ===
+                // Applichiamo il material condiviso (il tuo shader di flusso) all'SVG 3D
+                const meshPart = new THREE.Mesh(geometry, material); 
                 svgMeshGroup.add(meshPart);
             }
         }
         
         // Posizionamento e Rotazione Iniziale
-        svgMeshGroup.position.set(0.6, 0.0, 0); // Posizione nella colonna destra
+        svgMeshGroup.position.set(0.6, 0.0, 0); 
         svgMeshGroup.rotation.x = Math.PI * 0.1; 
         svgMeshGroup.rotation.y = Math.PI * 0.2; 
         
@@ -147,7 +133,7 @@ function createSvg3DMesh() {
     // Gestore degli errori (cruciale)
     function (error) {
         console.error('Errore nel caricamento del SVG.', error);
-        console.warn("Se l'errore è CORS, carica il SVG da una risorsa locale o disabilita il caricamento SVG temporaneamente.");
+        console.warn("Assicurati che 'models/svg/lightning.svg' esista e sia accessibile. Errore di CORS potrebbe verificarsi se non è servito dalla stessa origine.");
     });
 }
 
@@ -155,7 +141,7 @@ function createSvg3DMesh() {
 function setupScrollSync() {
     const progressElement = document.getElementById('flow-progress');
 
-    // 1. Sincronizzazione 3D: Collega lo scroll VERTICALE all'uniform dello shader
+    // 1. Sincronizzazione 3D: Collega lo scroll VERTICALE all'uniform dello shader (NON MODIFICATO)
     gsap.to(material.uniforms.uScrollProgress, {
         value: 1.0, 
         scrollTrigger: {
@@ -173,7 +159,7 @@ function setupScrollSync() {
         }
     });
 
-    // 2. Sincronizzazione HTML: Animazione della Sezione di Attivazione
+    // 2. Sincronizzazione HTML: Animazione della Sezione di Attivazione (NON MODIFICATO)
     gsap.to("#activation-section .animated-text", {
         opacity: 1,
         y: 0, 
@@ -186,10 +172,11 @@ function setupScrollSync() {
         }
     });
     
-    // 3. Animazione SVG in Scroll
-    if (svgMeshGroup) {
+    // 3. Animazione SVG in Scroll (NON MODIFICATO)
+    // Controlla che svgMeshGroup sia stato caricato
+    if (svgMeshGroup) { 
         gsap.to(svgMeshGroup.rotation, {
-            y: "+=" + Math.PI * 1, // Ruota di 180 gradi durante lo scroll
+            y: "+=" + Math.PI * 1, 
             scrollTrigger: {
                 trigger: "body",
                 start: "top top",
@@ -198,8 +185,7 @@ function setupScrollSync() {
             }
         });
         
-        // Esempio: Sposta leggermente il SVG in alto nella hero section
-         gsap.to(svgMeshGroup.position, {
+        gsap.to(svgMeshGroup.position, {
             y: -0.1, 
             scrollTrigger: {
                 trigger: "#hero-flow",
@@ -208,6 +194,10 @@ function setupScrollSync() {
                 scrub: true,
             }
         });
+    } else {
+        // Fallback se SVG non è ancora caricato, o non lo è affatto
+        console.warn("svgMeshGroup non è ancora disponibile per le animazioni GSAP. Assicurati che l'SVG sia caricato correttamente.");
+        // Puoi aggiungere un listener per quando l'SVG è pronto, o avvolgere GSAP in una Promise.
     }
 }
 
@@ -240,7 +230,7 @@ function animate(time) {
     }
     
     // Rotazione continua dell'SVG (per mostrarne la natura 3D)
-    if (svgMeshGroup) {
+    if (svgMeshGroup) { // Controlla che svgMeshGroup esista
         svgMeshGroup.rotation.y += 0.001; 
     }
 
