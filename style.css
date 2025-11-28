@@ -1,312 +1,128 @@
-/* Reset Base */
+/* Reset e Base */
+:root {
+    --color-primary: #f0f0f0;
+    --color-secondary: #00eaff; /* Blu ciano per l'effetto high-tech */
+    --color-dark: #0a0a0a;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-:root {
-    --color-primary: #00ffff;      /* Ciano brillante (Neon) */
-    --color-bg: #03001e;           /* Sfondo molto scuro */
-    --color-text: #e0e0e0;         /* Testo chiaro */
-    --font-family-sans: 'Helvetica Neue', sans-serif;
+html, body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--color-primary);
+    background-color: var(--color-dark);
+    /* Rimuove lo scrollbar in body, per gestire lo scroll tramite GSAP ScrollTrigger */
+    overflow: hidden; 
 }
 
-body {
-    font-family: var(--font-family-sans);
-    color: var(--color-text);
-    background-color: var(--color-bg);
-    overflow-x: hidden;
-}
-
-/* Contenitori Principali */
+/* 3D Container */
 #webgl-container {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1; /* Sotto l'header e la hero */
-}
-
-#hero-section {
-    position: relative;
-    z-index: 5;
+    width: 100vw;
     height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 50px;
-    color: var(--color-text);
+    z-index: 1; /* Il 3D è dietro l'interfaccia */
 }
 
-/* ====================================
-   NAVBAR STYLES
-   ==================================== */
-
-#main-header {
+/* Navbar */
+#navbar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 100; 
-    padding: 20px 50px;
-    background: rgba(3, 0, 30, 0.6); 
-    backdrop-filter: blur(5px);
-    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-    transition: background 0.3s ease, padding 0.3s ease;
-}
-
-.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1400px;
-    margin: 0 auto;
+    padding: 20px 40px;
+    z-index: 10; /* Sopra tutto */
+    backdrop-filter: blur(5px); /* Leggero blur per staccare dal 3D */
 }
 
 .logo {
     font-size: 1.8em;
-    font-weight: bold;
-    color: var(--color-text);
-    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 2px;
 }
 
-.logo-3d {
+.logo span {
+    color: var(--color-secondary);
+}
+
+.nav-links a {
     color: var(--color-primary);
-    text-shadow: 0 0 10px var(--color-primary);
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-}
-
-.nav-links li {
-    margin-left: 40px;
-}
-
-.nav-item {
     text-decoration: none;
-    color: var(--color-text);
-    position: relative;
-    padding: 5px 0;
-    transition: color 0.3s ease;
+    margin-left: 30px;
+    font-size: 0.9em;
+    transition: color 0.3s;
 }
 
-.nav-item::after {
-    content: '';
+.nav-links a:hover {
+    color: var(--color-secondary);
+}
+
+.cta-nav {
+    background-color: var(--color-secondary);
+    color: var(--color-dark) !important;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.cta-nav:hover {
+    background-color: #00ffff;
+}
+
+/* Hero Section Content */
+#hero-section {
     position: absolute;
-    bottom: 0;
+    top: 50%;
     left: 50%;
-    width: 0;
-    height: 2px;
-    background-color: var(--color-primary);
-    box-shadow: 0 0 10px var(--color-primary);
-    transition: width 0.3s ease, left 0.3s ease;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 5;
+    pointer-events: none; /* Permette interazioni 3D attraverso il testo */
 }
 
-.nav-item:hover, .nav-item.active {
-    color: var(--color-primary);
+.headline {
+    font-size: 5em;
+    font-weight: 900;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(0, 234, 255, 0.5); /* Sottile glow high-tech */
+    margin-bottom: 10px;
 }
 
-.nav-item:hover::after, .nav-item.active::after {
-    width: 100%;
-    left: 0;
-}
-
-.menu-toggle { display: none; /* Nascosto su desktop */ }
-
-/* ====================================
-   HERO SECTION STYLES
-   ==================================== */
-.hero-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 1400px;
-    width: 100%;
-    margin: 0 auto;
-    gap: 80px;
-}
-
-.hero-image-container {
-    flex: 1; 
-    min-width: 400px;
-    height: 400px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* Contenitore per il canvas 3D specifico (opzionale) o solo sfondo */
-    border: 1px solid rgba(0, 255, 255, 0.2);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
-    background: rgba(3, 0, 30, 0.4);
-    border-radius: 10px;
-    overflow: hidden; /* Importante per l'oggetto 3D specifico */
-}
-
-/* Stili per il placeholder o futuro oggetto 3D */
-#hero-3d-object-placeholder {
-    width: 100%;
-    height: 100%;
-    background: transparent; /* Sarà riempito da 3D */
-}
-
-.hero-text-container {
-    flex: 1;
-    text-align: left;
-    max-width: 600px;
-}
-
-.hero-title {
-    font-size: 3.5em;
-    line-height: 1.2;
-    margin-bottom: 25px;
-    color: white;
-    text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-}
-
-.hero-description {
-    font-size: 1.2em;
-    line-height: 1.6;
+.subtitle {
+    font-size: 1.5em;
+    font-weight: 300;
     margin-bottom: 40px;
 }
 
-.hero-actions {
-    display: flex;
-    gap: 20px;
-}
-
-/* Stili Bottoni (omessi per brevità, sono quelli definiti prima: .btn, .btn-primary, .btn-secondary) */
-.btn { /* ... */ }
-.btn-primary { /* ... */ }
-.btn-primary:hover { /* ... */ }
-.btn-secondary { /* ... */ }
-.btn-secondary:hover { /* ... */ }
-
-
-/* ====================================
-   LOADING OVERLAY & SPINNER
-   ==================================== */
-#loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--color-bg);
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
+.cta-button {
+    pointer-events: all; /* Riabilita le interazioni per il pulsante */
+    background: none;
+    border: 2px solid var(--color-secondary);
+    color: var(--color-secondary);
+    padding: 15px 40px;
     font-size: 1.2em;
-    color: var(--color-primary);
-    opacity: 1;
-    transition: opacity 1s ease;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 50px; /* Pulsante futuristico */
+    box-shadow: 0 0 15px rgba(0, 234, 255, 0.4);
 }
 
-#loading-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
+.cta-button:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-dark);
+    box-shadow: 0 0 25px rgba(0, 234, 255, 0.8);
 }
 
-.loader-spinner {
-    width: 60px;
-    height: 60px;
-    border: 5px solid rgba(0, 255, 255, 0.2);
-    border-top-color: var(--color-primary);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* ====================================
-   SEZIONE SERVIZI STYLES
-   ==================================== */
-
-.content-section {
-    /* Base per tutte le sezioni di contenuto (Hero, Services, etc.) */
-    min-height: 100vh; /* Ogni sezione prende almeno l'altezza della viewport */
-    padding: 100px 50px;
-    position: relative;
-    z-index: 5; 
-}
-
-#services-section {
-    background: transparent; /* Permette alla scena 3D di continuare a vedersi */
-    padding-top: 50px; /* Spazio aggiuntivo in alto */
-}
-
-.section-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-.section-title {
-    font-size: 3em;
-    margin-bottom: 10px;
-    color: white;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-    opacity: 0; /* Inizialmente nascosto per l'animazione GSAP */
-}
-
-.section-subtitle {
-    font-size: 1.2em;
-    color: var(--color-text);
-    margin-bottom: 60px;
-    opacity: 0; /* Inizialmente nascosto per l'animazione GSAP */
-}
-
-.services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 40px;
-    padding-bottom: 100px;
-}
-
-.service-card {
-    background: rgba(0, 255, 255, 0.05); /* Sfondo molto leggero */
-    border: 1px solid rgba(0, 255, 255, 0.1); /* Bordo sottile effetto ologramma */
-    padding: 30px;
-    border-radius: 12px;
-    transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
-    text-align: left;
-    transform: translateY(50px) rotateX(15deg); /* Iniziale 3D offset per GSAP */
-    opacity: 0; /* Inizialmente nascosto */
-    transform-style: preserve-3d; /* Abilita trasformazioni 3D migliori */
-}
-
-.service-card:hover {
-    transform: translateY(-5px) rotateX(0deg) scale(1.03);
-    box-shadow: 0 15px 40px rgba(0, 255, 255, 0.2), 0 0 25px rgba(0, 255, 255, 0.1);
-    background: rgba(0, 255, 255, 0.1);
-}
-
-.card-icon {
-    font-size: 2.5em;
-    display: block;
-    margin-bottom: 15px;
-    color: var(--color-primary);
-}
-
-.service-card h3 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-    color: white;
-    text-shadow: 0 0 5px var(--color-primary);
-}
-
-.service-card p {
-    color: var(--color-text);
-    line-height: 1.5;
-}
-
-/* Media Queries per la responsività (omesse per brevità) */
+/* Scroll Indicator o Altri elementi futuri */
