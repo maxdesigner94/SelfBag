@@ -1,38 +1,139 @@
+/* ========================================= */
+/* 0. RESET & VARIABILI GLOBALI */
+/* ========================================= */
+
 :root {
-    --primary: #00f3ff;
-    --secondary: #bc13fe;
-    --dark: #050505;
+    /* Colori Neon e Scuro */
+    --primary: #00f3ff;       /* Cyan Neon */
+    --secondary: #bc13fe;     /* Purple Neon */
+    --dark: #050505;          /* Sfondo Ultra-Scuro */
     --text: #ffffff;
     --font-heading: 'Orbitron', sans-serif;
     --font-body: 'Rajdhani', sans-serif;
+    --transition-duration: 0.4s;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+html {
+    scroll-behavior: smooth; /* Per gli anchor link della navigazione */
+}
 
 body {
     background-color: var(--dark);
     color: var(--text);
     font-family: var(--font-body);
-    /* Importante per il parallasse GSAP */
+    font-size: 16px;
+    line-height: 1.6;
     overflow-x: hidden;
-    overflow-y: scroll; 
 }
 
-/* Layer PIXI (Sempre sullo sfondo per particelle) */
+/* ========================================= */
+/* 1. LAYERS DI SFONDO (PIXI & IMMAGINI) */
+/* ========================================= */
+
+/* Contenitore PixiJS (Strato 1: Particelle e Effetti WebGL) */
 #pixi-container {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    z-index: 1;
+    z-index: 1; 
+    /* Blend Mode per mescolare i colori neon */
+    mix-blend-mode: screen; 
 }
 
-/* Contenitore principale scrollabile */
+/* Strati Parallasse di Sfondo (Strato 2: Immagini Auto) */
+.parallax-bg {
+    position: fixed; /* Fissato per l'effetto parallasse basato sullo scroll GSAP */
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    overflow: hidden;
+    z-index: 2;
+    transition: opacity var(--transition-duration);
+}
+
+.car-image {
+    width: 110%; /* Più grande per il Parallasse Mouse */
+    height: 110%;
+    object-fit: cover;
+    opacity: 0.6; /* Sfumato per effetto notturno/tech */
+    /* Posizione iniziale (centrata per coprire) */
+    transform: translate(-5%, -5%); 
+    transition: transform 0.1s; /* Transizione smooth per il mousemove */
+}
+
+/* Contenuto principale scorrevole */
 #scroll-container {
     position: relative;
-    z-index: 5; /* Contenuto sempre sopra gli sfondi */
-    pointer-events: none;
+    z-index: 5; 
+    /* Rende il contenuto non cliccabile per far passare i click all'HUD/Canvas, ma lo gestiamo meglio sulla NAV e CTA */
 }
 
+/* ========================================= */
+/* 2. OVERLAY UI (NAV & SEZIONI) */
+/* ========================================= */
+
+/* NAV HUD */
+.hud-nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100; /* Massima priorità */
+    /* Effetto ottico elegante per non coprire gli sfondi */
+    mix-blend-mode: difference; 
+}
+
+.logo { 
+    font-family: var(--font-heading); 
+    font-size: 2rem; 
+    font-weight: 900; 
+    letter-spacing: 2px;
+    color: var(--text);
+}
+
+.menu a {
+    color: var(--text);
+    text-decoration: none;
+    margin-left: 2.5rem;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 1.1rem;
+    position: relative;
+    transition: color var(--transition-duration);
+}
+
+.menu a::after {
+    content: ''; 
+    position: absolute; 
+    bottom: -5px; 
+    left: 0; 
+    width: 0; 
+    height: 2px; 
+    background: var(--primary); 
+    transition: width 0.3s ease-out;
+}
+.menu a:hover::after { width: 100%; }
+
+.cta-btn {
+    border: 1px solid var(--primary);
+    padding: 0.5rem 1.5rem;
+    color: var(--primary) !important;
+    transition: background-color 0.3s, color 0.3s;
+}
+.cta-btn:hover {
+    background-color: var(--primary);
+    color: var(--dark) !important;
+}
+
+/* SEZIONI SCORREVOLI */
 .scroll-section {
     height: 100vh;
     width: 100%;
@@ -40,44 +141,149 @@ body {
     align-items: center;
     padding: 0 10%;
     position: relative;
-    pointer-events: none; /* Deve rimanere pass-through */
 }
 
-/* Strati di Parallasse */
-.parallax-bg {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    overflow: hidden;
-    /* Useremo JS per la trasformazione, non CSS */
+.content-wrap {
+    /* La wrap deve essere cliccabile */
+    pointer-events: auto; 
+    max-width: 600px;
+    padding: 20px;
+    /* Aggiunge un leggero effetto 'Glassmorphism' tech */
+    background: rgba(5, 5, 5, 0.5); 
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(0, 243, 255, 0.1);
+    transition: all var(--transition-duration);
+}
+.content-wrap:hover {
+    border: 1px solid var(--primary);
 }
 
-.car-image {
-    width: 120%; /* Leggermente più grande per il panning */
-    height: 120%;
-    object-fit: cover;
-    opacity: 0.7; /* Leggermente attenuata per far risaltare UI e neon */
-    transform: translate(-10%, -10%);
-}
+/* Allineamento Contenuto */
+.right-align { justify-content: flex-end; }
+.right-align .content-wrap { text-align: right; }
+.center-align { justify-content: center; }
+.center-align .content-wrap { text-align: center; }
 
-.parallax-element {
-    /* Contiene il testo e altri elementi UI */
-    position: relative;
-    z-index: 10;
-    pointer-events: auto; /* Deve essere cliccabile */
-}
-
-/* Stili UI (Header, H1, CTA, ecc.) - Lasciati invariati */
-
-.hud-nav {
-    /* ... (CSS dal primo prompt) ... */
-    z-index: 20;
-    mix-blend-mode: difference;
-}
+/* ========================================= */
+/* 3. TIPOGRAFIA & COMPONENTI */
+/* ========================================= */
 
 .hero-title {
-    /* ... (CSS dal primo prompt) ... */
-    transform: translateY(0px); /* Rimosso il transform iniziale, gestito da GSAP */
+    font-family: var(--font-heading);
+    font-size: 6rem;
+    line-height: 0.9;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
 }
 
-/* ... (Il resto del CSS dalle risposte precedenti rimane identico) ... */
+.highlight { 
+    color: transparent; 
+    /* Effetto 'ghost' o 'scanner' */
+    -webkit-text-stroke: 2px var(--primary); 
+    text-stroke: 2px var(--primary);
+    letter-spacing: 5px;
+}
+
+.hero-subtitle { 
+    font-size: 1.5rem; 
+    letter-spacing: 3px; 
+    color: rgba(255, 255, 255, 0.8);
+}
+
+h2 { 
+    font-family: var(--font-heading); 
+    font-size: 3.5rem; 
+    margin-bottom: 1.5rem; 
+    color: var(--primary); 
+    text-transform: uppercase;
+}
+
+.spec-text { 
+    font-size: 1.2rem; 
+    line-height: 2.0; 
+    padding-left: 20px;
+    border-left: 4px solid var(--secondary); /* Neon indicator */
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+.right-align .spec-text {
+    border-left: none;
+    border-right: 4px solid var(--secondary);
+    padding-left: 0;
+    padding-right: 20px;
+}
+
+.mega-cta {
+    margin-top: 2rem;
+    background: var(--primary);
+    color: var(--dark);
+    border: none;
+    padding: 1.2rem 4rem;
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s ease-out;
+    letter-spacing: 2px;
+}
+.mega-cta:hover { 
+    transform: scale(1.05); 
+    box-shadow: 0 0 20px var(--primary);
+}
+
+.scroll-indicator {
+    position: absolute; 
+    bottom: 3rem; 
+    left: 50%; 
+    transform: translateX(-50%);
+    font-size: 0.9rem; 
+    letter-spacing: 4px; 
+    color: var(--secondary);
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce { 
+    0%, 100% { transform: translate(-50%, 0); opacity: 1; } 
+    50% { transform: translate(-50%, 15px); opacity: 0.5; } 
+}
+
+/* ========================================= */
+/* 4. MEDIA QUERIES (RESPONSIVE) */
+/* ========================================= */
+
+@media (max-width: 1024px) {
+    .hud-nav {
+        padding: 1.5rem 2rem;
+    }
+    .hero-title {
+        font-size: 4rem;
+    }
+    h2 {
+        font-size: 2.5rem;
+    }
+    .mega-cta {
+        padding: 1rem 3rem;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hud-nav {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .menu {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .menu a {
+        margin: 0 0.8rem;
+    }
+    .hero-title {
+        font-size: 3rem;
+    }
+    .scroll-section {
+        padding: 0 5%;
+    }
+}
