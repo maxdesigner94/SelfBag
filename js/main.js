@@ -58,7 +58,7 @@ gltfLoader.load(
     MODEL_URL,
     (gltf) => {
         const model = gltf.scene;
-        
+        barFill.style.width = '100%'; // FORZA CHIUSURA LOADER
         // SETUP MODELLO SPECIFICO PER BUGGY.GLB
         model.scale.set(0.15, 0.15, 0.15); // Ridimensiona per adattarsi al tunnel
         model.rotation.y = Math.PI; // Ruota di 180 gradi per guardare avanti
