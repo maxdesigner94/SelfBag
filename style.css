@@ -1,22 +1,22 @@
-/* Reset e Base */
 :root {
-    --color-primary: #f0f0f0;
-    --color-secondary: #00eaff; /* Blu ciano per l'effetto high-tech */
-    --color-dark: #0a0a0a;
+    --primary-color: #0077ff;
+    --secondary-color: #00ffaa;
+    --background-color: #0a0a0c;
+    --text-color: #f0f0f0;
+    --font-family: 'Arial', sans-serif;
 }
 
+/* Reset Base */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-html, body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--color-primary);
-    background-color: var(--color-dark);
-    /* Rimuove lo scrollbar in body, per gestire lo scroll tramite GSAP ScrollTrigger */
-    overflow: hidden; 
+body {
+    font-family: var(--font-family);
+    color: var(--text-color);
+    overflow: hidden; /* Importante per un'esperienza a schermo intero */
 }
 
 /* 3D Container */
@@ -26,103 +26,111 @@ html, body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 1; /* Il 3D è dietro l'interfaccia */
+    z-index: 1; /* Il 3D è sullo sfondo */
 }
 
-/* Navbar */
-#navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
+/* UI Overlay (2D) */
+#ui-overlay {
+    position: relative;
+    z-index: 10; /* L'UI è in primo piano */
     width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    pointer-events: none; /* Permette il click "attraverso" per interazioni globali se necessario */
+}
+
+/* Header/Navigazione */
+header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px 40px;
-    z-index: 10; /* Sopra tutto */
-    backdrop-filter: blur(5px); /* Leggero blur per staccare dal 3D */
+    pointer-events: auto; /* Riattiva il pointer-events per gli elementi interattivi */
 }
 
-.logo {
+#logo {
     font-size: 1.8em;
-    font-weight: 700;
+    font-weight: bold;
+    color: var(--secondary-color);
     letter-spacing: 2px;
 }
 
-.logo span {
-    color: var(--color-secondary);
-}
-
-.nav-links a {
-    color: var(--color-primary);
+nav a {
+    color: var(--text-color);
     text-decoration: none;
-    margin-left: 30px;
-    font-size: 0.9em;
-    transition: color 0.3s;
+    margin-left: 25px;
+    font-size: 1.1em;
+    opacity: 0.7;
+    transition: opacity 0.3s, color 0.3s;
 }
 
-.nav-links a:hover {
-    color: var(--color-secondary);
+nav a:hover, nav a.active {
+    opacity: 1;
+    color: var(--primary-color);
 }
 
-.cta-nav {
-    background-color: var(--color-secondary);
-    color: var(--color-dark) !important;
-    padding: 8px 15px;
-    border-radius: 5px;
-    font-weight: 600;
-    transition: background-color 0.3s;
-}
-
-.cta-nav:hover {
-    background-color: #00ffff;
-}
-
-/* Hero Section Content */
-#hero-section {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+/* Contenuto Principale */
+#content-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    z-index: 5;
-    pointer-events: none; /* Permette interazioni 3D attraverso il testo */
+    padding: 0 5%;
 }
 
-.headline {
-    font-size: 5em;
-    font-weight: 900;
-    letter-spacing: 5px;
-    text-transform: uppercase;
-    text-shadow: 0 0 10px rgba(0, 234, 255, 0.5); /* Sottile glow high-tech */
+.content-section {
+    max-width: 600px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 30px;
+    border-radius: 10px;
+    pointer-events: auto;
+    transition: opacity 0.5s;
+}
+
+.content-section.hidden {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute; /* Per nasconderlo senza rovinare il layout */
+}
+
+h2 {
+    font-size: 3em;
     margin-bottom: 10px;
+    color: var(--primary-color);
 }
 
-.subtitle {
-    font-size: 1.5em;
-    font-weight: 300;
-    margin-bottom: 40px;
-}
-
-.cta-button {
-    pointer-events: all; /* Riabilita le interazioni per il pulsante */
-    background: none;
-    border: 2px solid var(--color-secondary);
-    color: var(--color-secondary);
-    padding: 15px 40px;
+p {
     font-size: 1.2em;
-    font-weight: 600;
-    letter-spacing: 1px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+/* Pulsante CTA */
+.cta-button {
+    background: var(--secondary-color);
+    color: var(--background-color);
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border-radius: 5px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 50px; /* Pulsante futuristico */
-    box-shadow: 0 0 15px rgba(0, 234, 255, 0.4);
+    transition: background 0.3s, transform 0.1s;
 }
 
 .cta-button:hover {
-    background-color: var(--color-secondary);
-    color: var(--color-dark);
-    box-shadow: 0 0 25px rgba(0, 234, 255, 0.8);
+    background: var(--primary-color);
+    color: var(--text-color);
+    transform: scale(1.05);
 }
 
-/* Scroll Indicator o Altri elementi futuri */
+/* Footer */
+.footer-info {
+    padding: 10px 40px;
+    font-size: 0.8em;
+    text-align: right;
+    opacity: 0.5;
+    pointer-events: auto;
+}
