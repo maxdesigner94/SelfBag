@@ -1,5 +1,5 @@
-import * as THREE from 'three';
-import { gsap } from 'gsap';
+//import * as THREE from 'three';
+//import { gsap } from 'gsap';
 
 // --- DATI IMMAGINI ---
 const CAR_IMAGES = [
