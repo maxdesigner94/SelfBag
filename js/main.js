@@ -3,212 +3,194 @@ const canvas = document.querySelector('#webgl-canvas');
 const loaderElement = document.getElementById('loader');
 const barFill = document.querySelector('.bar-fill');
 
-// Scene Setup
+// Scene
 const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x050505, 0.03); // Nebbia per profondità
+scene.fog = new THREE.FogExp2(0x050505, 0.025);
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
-// --- 1. CREAZIONE DEL TUNNEL (Curve & Tube) ---
-// Creiamo un percorso curvo complesso
+// --- 1. TUNNEL INFINITO ---
 const points = [];
-for (let i = 0; i < 50; i++) {
-    const x = Math.sin(i * 0.5) * 10;
-    const y = Math.cos(i * 0.3) * 10;
-    const z = i * -20; // Si estende verso l'interno
+for (let i = 0; i < 60; i++) {
+    const x = Math.sin(i * 0.5) * 8;
+    const y = Math.cos(i * 0.3) * 5;
+    const z = i * -12; 
     points.push(new THREE.Vector3(x, y, z));
 }
-
 const path = new THREE.CatmullRomCurve3(points);
-
-// Creazione geometria Tubo
-const tubeGeometry = new THREE.TubeGeometry(path, 100, 2, 8, false);
-
-// Materiale Wireframe Tecnologico
-const tubeMaterial = new THREE.MeshBasicMaterial({ 
-    color: 0x00f3ff, 
-    wireframe: true,
-    transparent: true,
-    opacity: 0.3
+const tubeGeo = new THREE.TubeGeometry(path, 120, 2.5, 12, false); // Più dettagliato (12)
+const tubeMat = new THREE.MeshBasicMaterial({ 
+    color: 0x00f3ff, wireframe: true, transparent: true, opacity: 0.15 
 });
-
-const tube = new THREE.Mesh(tubeGeometry, tubeMaterial);
+const tube = new THREE.Mesh(tubeGeo, tubeMat);
 scene.add(tube);
 
-// --- 2. PARTICELLE (EFFETTO VELOCITÀ) ---
-const particlesCount = 2000;
-const posArray = new Float32Array(particlesCount * 3);
+// --- 2. PARTICELLE ---
+const pCount = 2000;
+const pPos = new Float32Array(pCount * 3);
+for(let i=0; i<pCount*3; i++) pPos[i] = (Math.random()-0.5)*120;
+const pGeo = new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+const pMat = new THREE.PointsMaterial({ size: 0.05, color: 0xffffff });
+const stars = new THREE.Points(pGeo, pMat);
+scene.add(stars);
 
-for(let i = 0; i < particlesCount * 3; i++) {
-    posArray[i] = (Math.random() - 0.5) * 100; // Spargiamo nello spazio
-}
+// --- 3. CARICAMENTO URL REMOTO (CDN) ---
+const heroGroup = new THREE.Group();
+scene.add(heroGroup);
 
-const particlesGeo = new THREE.BufferGeometry();
-particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-const particlesMat = new THREE.PointsMaterial({ size: 0.05, color: 0xffffff });
-const particlesMesh = new THREE.Points(particlesGeo, particlesMat);
-scene.add(particlesMesh);
+// URL di un modello pubblico affidabile (Nissan Skyline modificata)
+// Usiamo raw.githubusercontent proxato da jsDelivr per velocità e CORS headers corretti
+const MODEL_URL = 'https://raw.githubusercontent.com/baronwatts/models/master/skyline.glb';
 
-// --- 3. CREAZIONE "CYBER CAR" PROCEDURALE (Placeholder per modello GLTF) ---
-// Funzione per creare una macchina stilizzata low-poly
-function createCyberCar(color, x, y, z) {
-    const carGroup = new THREE.Group();
+const gltfLoader = new THREE.GLTFLoader();
+const dracoLoader = new THREE.DRACOLoader();
 
-    // Body
-    const bodyGeo = new THREE.BoxGeometry(2, 0.5, 4);
-    const bodyMat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.2, metalness: 0.8 });
-    const body = new THREE.Mesh(bodyGeo, bodyMat);
-    
-    // Cabin (Neon glass)
-    const cabinGeo = new THREE.ConeGeometry(1, 1.5, 4);
-    const cabinMat = new THREE.MeshBasicMaterial({ color: 0x000000, wireframe: true }); // Stile Tron
-    const cabin = new THREE.Mesh(cabinGeo, cabinMat);
-    cabin.rotation.y = Math.PI / 4;
-    cabin.position.y = 0.5;
+// Configura il decoder WebAssembly direttamente dal CDN
+dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+gltfLoader.setDRACOLoader(dracoLoader);
 
-    // Wheels (Glowing)
-    const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.2, 16);
-    const wheelMat = new THREE.MeshBasicMaterial({ color: 0xbc13fe });
-    
-    const w1 = new THREE.Mesh(wheelGeo, wheelMat); w1.position.set(1.1, -0.2, 1.2); w1.rotation.z = Math.PI / 2;
-    const w2 = new THREE.Mesh(wheelGeo, wheelMat); w2.position.set(-1.1, -0.2, 1.2); w2.rotation.z = Math.PI / 2;
-    const w3 = new THREE.Mesh(wheelGeo, wheelMat); w3.position.set(1.1, -0.2, -1.2); w3.rotation.z = Math.PI / 2;
-    const w4 = new THREE.Mesh(wheelGeo, wheelMat); w4.position.set(-1.1, -0.2, -1.2); w4.rotation.z = Math.PI / 2;
+gltfLoader.load(
+    MODEL_URL,
+    (gltf) => {
+        const model = gltf.scene;
+        
+        // SETUP MODELLO
+        model.scale.set(1.5, 1.5, 1.5); // Scala per renderla imponente
+        model.rotation.y = Math.PI; // Ruota per guardare avanti
+        model.position.y = -2.5; // Abbassa al livello della strada
 
-    carGroup.add(body, cabin, w1, w2, w3, w4);
-    carGroup.position.set(x, y, z);
-    return carGroup;
-}
+        // Ottimizzazione Materiali al volo
+        model.traverse((o) => {
+            if (o.isMesh) {
+                o.castShadow = true;
+                o.receiveShadow = true;
+                if(o.material.map) o.material.map.anisotropy = 16;
+                // Rendi la carrozzeria più lucida
+                if(o.name.includes("body") || o.name.includes("paint")) {
+                    o.material.roughness = 0.1;
+                    o.material.metalness = 0.7;
+                    o.material.color.setHex(0xbc13fe); // Colore AURA Purple
+                }
+            }
+        });
 
-// Aggiungiamo una macchina protagonista
-const heroCar = createCyberCar(0x333333, 0, -2, -10);
-scene.add(heroCar);
+        heroGroup.add(model);
+    },
+    (xhr) => {
+        // LOADING BAR REALE
+        if (xhr.lengthComputable) {
+            const percent = (xhr.loaded / xhr.total) * 100;
+            barFill.style.width = percent + '%';
+        } else {
+            // Fallback se il server non dice la dimensione totale
+            // Simula avanzamento
+            let currentWidth = parseFloat(barFill.style.width) || 0;
+            if(currentWidth < 90) barFill.style.width = (currentWidth + 5) + '%';
+        }
+    },
+    (error) => {
+        console.error('Errore download:', error);
+        loaderElement.innerHTML = `<div style="color:red; font-family:sans-serif;">CONNECTION FAILED: ${error}</div>`;
+    }
+);
 
 // Luci
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-scene.add(ambientLight);
+const ambient = new THREE.AmbientLight(0xffffff, 1); // Luce ambientale più forte per vedere i dettagli
+scene.add(ambient);
 
-const pointLight = new THREE.PointLight(0x00f3ff, 2, 50);
-pointLight.position.set(0, 5, -5);
-scene.add(pointLight);
+const spotLight = new THREE.SpotLight(0x00f3ff, 5);
+spotLight.position.set(0, 10, 5);
+spotLight.angle = Math.PI / 4;
+spotLight.penumbra = 0.5;
+heroGroup.add(spotLight); // La luce viaggia con l'auto
 
-// --- 4. ANIMAZIONI & SCROLL (GSAP) ---
+// --- 4. SCROLL ANIMATION ---
 gsap.registerPlugin(ScrollTrigger);
+const camData = { t: 0 };
 
-// Oggetto proxy per controllare la posizione della camera lungo la curva
-const cameraProgress = { value: 0 };
-
-// Animation Timeline
 const tl = gsap.timeline({
     scrollTrigger: {
-        trigger: "main",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1, // Smooth scrubbing
+        trigger: "main", start: "top top", end: "bottom bottom", scrub: 1
     }
 });
 
-// Al progredire dello scroll, avanziamo nel tubo (da 0 a 1 lungo il percorso)
-tl.to(cameraProgress, {
-    value: 0.9, // Arriviamo quasi alla fine
+tl.to(camData, {
+    t: 0.9,
     ease: "none",
     onUpdate: () => {
-        // Calcola la posizione sulla curva
-        const pointOnCurve = path.getPointAt(cameraProgress.value);
-        const lookAtPoint = path.getPointAt(Math.min(cameraProgress.value + 0.05, 1));
+        // Calcolo posizione su curva
+        const pos = path.getPointAt(camData.t);
+        const look = path.getPointAt(Math.min(camData.t + 0.05, 1));
         
-        // Muovi la camera
-        camera.position.copy(pointOnCurve);
-        camera.lookAt(lookAtPoint);
+        camera.position.copy(pos);
+        camera.lookAt(look);
+
+        // Auto segue la camera ma leggermente avanti
+        const carPos = path.getPointAt(Math.min(camData.t + 0.03, 1));
+        const carLook = path.getPointAt(Math.min(camData.t + 0.08, 1));
         
-        // Muovi la macchina davanti alla camera (effetto inseguimento)
-        const carPos = path.getPointAt(Math.min(cameraProgress.value + 0.02, 1));
-        // Offset macchina per non stare esattamente al centro
-        heroCar.position.copy(carPos);
-        heroCar.position.y -= 1.5; 
-        heroCar.lookAt(path.getPointAt(Math.min(cameraProgress.value + 0.1, 1)));
+        // Interpolazione morbida (Lerp) per il movimento dell'auto
+        heroGroup.position.lerp(carPos, 0.1);
+        heroGroup.lookAt(carLook);
         
-        // Rotazione ruote o effetti particellari
-        heroCar.children.forEach((child, index) => {
-            if(index > 1) child.rotation.x += 0.2; // Ruote
-        });
+        // Banking (inclinazione in curva)
+        const tangent = path.getTangentAt(camData.t).normalize();
+        heroGroup.rotation.z = -tangent.x * 0.8;
     }
 });
 
-// Animazioni UI con Anime.js (Entrata Titoli)
-function animateHeroText() {
+// --- 5. LOOP & UTILS ---
+function animateUI() {
     anime({
         targets: '.hero-title',
-        translateY: [50, 0],
-        opacity: [0, 1],
-        easing: 'easeOutExpo',
-        duration: 2000,
-        delay: 500
-    });
-    anime({
-        targets: '.hero-subtitle',
-        opacity: [0, 1],
-        duration: 2000,
-        delay: 1000
+        translateY: [100, 0], opacity: [0, 1], easing: 'easeOutExpo', duration: 1500
     });
 }
 
-// --- 5. INTERATTIVITÀ MOUSE ---
-const cursor = { x: 0, y: 0 };
-window.addEventListener('mousemove', (event) => {
-    cursor.x = event.clientX / window.innerWidth - 0.5;
-    cursor.y = event.clientY / window.innerHeight - 0.5;
+// Check caricamento completato (Fake trigger 100% se il server non risponde length)
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        barFill.style.width = '100%';
+        gsap.to(loaderElement, { 
+            opacity: 0, delay: 0.5, onComplete: () => {
+                loaderElement.style.display = 'none';
+                animateUI();
+            }
+        });
+    }, 2000); // Max wait 2 sec poi forza l'avvio
 });
 
-// --- 6. RENDER LOOP ---
+// Interazione Mouse
+let mouseX = 0, mouseY = 0;
+window.addEventListener('mousemove', e => {
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+});
+
 const clock = new THREE.Clock();
-
 function tick() {
-    const elapsedTime = clock.getElapsedTime();
-
-    // Effetto "Respiro" del tunnel
-    tube.material.opacity = 0.3 + Math.sin(elapsedTime * 2) * 0.1;
+    const dt = clock.getElapsedTime();
     
-    // Parallasse del mouse sulla camera (aggiunge dinamismo)
-    camera.position.x += (cursor.x * 2 - camera.position.x) * 0.05;
-    camera.position.y += (-cursor.y * 2 - camera.position.y) * 0.05;
-
-    // Rotazione particelle
-    particlesMesh.rotation.z = elapsedTime * 0.1;
+    // Movimento particelle
+    stars.rotation.z = dt * 0.05;
+    
+    // Leggero movimento camera col mouse
+    camera.position.x += mouseX * 0.5;
+    camera.position.y += -mouseY * 0.5;
 
     renderer.render(scene, camera);
-    window.requestAnimationFrame(tick);
+    requestAnimationFrame(tick);
 }
 
-// --- 7. HANDLING RESIZE & LOADING ---
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-// Simulazione caricamento
-window.addEventListener('load', () => {
-    let progress = 0;
-    const interval = setInterval(() => {
-        progress += 5;
-        barFill.style.width = `${progress}%`;
-        if (progress >= 100) {
-            clearInterval(interval);
-            gsap.to(loaderElement, { 
-                opacity: 0, 
-                duration: 1, 
-                onComplete: () => {
-                    loaderElement.style.display = 'none';
-                    animateHeroText(); // Start UI anims
-                }
-            });
-        }
-    }, 50);
 });
 
 tick();
