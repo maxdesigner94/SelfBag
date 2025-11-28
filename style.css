@@ -1,136 +1,137 @@
 :root {
-    --primary-color: #0077ff;
-    --secondary-color: #00ffaa;
-    --background-color: #0a0a0c;
-    --text-color: #f0f0f0;
-    --font-family: 'Arial', sans-serif;
+    --primary: #00f3ff; /* Cyan Neon */
+    --secondary: #bc13fe; /* Purple Neon */
+    --dark: #050505;
+    --text: #ffffff;
+    --font-heading: 'Orbitron', sans-serif;
+    --font-body: 'Rajdhani', sans-serif;
 }
 
-/* Reset Base */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: var(--font-family);
-    color: var(--text-color);
-    overflow: hidden; /* Importante per un'esperienza a schermo intero */
+    background-color: var(--dark);
+    color: var(--text);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    height: 100vh;
+    width: 100vw;
 }
 
-/* 3D Container */
-#webgl-container {
+/* Canvas Fullscreen */
+#webgl-canvas {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1; /* Il 3D è sullo sfondo */
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Dietro al contenuto */
+    pointer-events: all; /* Per interazioni mouse */
 }
 
-/* UI Overlay (2D) */
-#ui-overlay {
-    position: relative;
-    z-index: 10; /* L'UI è in primo piano */
-    width: 100%;
-    height: 100vh;
+/* Loader */
+#loader {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--dark);
+    z-index: 9999;
     display: flex;
     flex-direction: column;
-    pointer-events: none; /* Permette il click "attraverso" per interazioni globali se necessario */
+    justify-content: center;
+    align-items: center;
 }
+.loader-text { font-family: var(--font-heading); letter-spacing: 4px; margin-bottom: 20px; color: var(--primary); }
+.loader-bar { width: 200px; height: 2px; background: #333; }
+.bar-fill { width: 0%; height: 100%; background: var(--primary); transition: width 0.5s; }
 
-/* Header/Navigazione */
-header {
+/* HUD Navigation */
+.hud-nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 2rem 4rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 40px;
-    pointer-events: auto; /* Riattiva il pointer-events per gli elementi interattivi */
+    z-index: 100;
+    mix-blend-mode: difference;
 }
 
-#logo {
-    font-size: 1.8em;
-    font-weight: bold;
-    color: var(--secondary-color);
-    letter-spacing: 2px;
-}
+.logo { font-family: var(--font-heading); font-size: 2rem; font-weight: 900; letter-spacing: 2px; }
 
-nav a {
-    color: var(--text-color);
+.menu a {
+    color: var(--text);
     text-decoration: none;
-    margin-left: 25px;
-    font-size: 1.1em;
-    opacity: 0.7;
-    transition: opacity 0.3s, color 0.3s;
+    margin-left: 2rem;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 1.1rem;
+    position: relative;
 }
 
-nav a:hover, nav a.active {
-    opacity: 1;
-    color: var(--primary-color);
+.menu a::after {
+    content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--primary); transition: 0.3s;
+}
+.menu a:hover::after { width: 100%; }
+
+.cta-btn {
+    border: 1px solid var(--primary);
+    padding: 0.5rem 1.5rem;
+    color: var(--primary) !important;
 }
 
-/* Contenuto Principale */
-#content-container {
-    flex-grow: 1;
+/* Sections */
+main { position: relative; z-index: 10; pointer-events: none; /* Lascia passare il click al canvas se necessario */ }
+
+.scroll-section {
+    height: 100vh;
+    width: 100%;
     display: flex;
-    justify-content: center;
     align-items: center;
-    text-align: center;
-    padding: 0 5%;
+    padding: 0 10%;
+    /* Create spaziatura per lo scroll */
 }
 
-.content-section {
+.content-wrap {
+    pointer-events: auto;
     max-width: 600px;
-    background: rgba(0, 0, 0, 0.6);
-    padding: 30px;
-    border-radius: 10px;
-    pointer-events: auto;
-    transition: opacity 0.5s;
 }
 
-.content-section.hidden {
-    opacity: 0;
-    pointer-events: none;
-    position: absolute; /* Per nasconderlo senza rovinare il layout */
+.hero-title {
+    font-family: var(--font-heading);
+    font-size: 5rem;
+    line-height: 1;
+    margin-bottom: 1rem;
+    opacity: 0; /* Animato via JS */
+    transform: translateY(50px);
 }
 
-h2 {
-    font-size: 3em;
-    margin-bottom: 10px;
-    color: var(--primary-color);
-}
+.highlight { color: transparent; -webkit-text-stroke: 2px var(--primary); }
 
-p {
-    font-size: 1.2em;
-    margin-bottom: 20px;
-    line-height: 1.5;
-}
+.hero-subtitle { font-size: 1.5rem; letter-spacing: 2px; opacity: 0; }
 
-/* Pulsante CTA */
-.cta-button {
-    background: var(--secondary-color);
-    color: var(--background-color);
+.right-align { justify-content: flex-end; text-align: right; }
+.center-align { justify-content: center; text-align: center; }
+
+h2 { font-family: var(--font-heading); font-size: 3rem; margin-bottom: 1rem; color: var(--primary); }
+.spec-text { font-size: 1.5rem; line-height: 1.6; border-right: 4px solid var(--secondary); padding-right: 20px; }
+
+.mega-cta {
+    margin-top: 2rem;
+    background: var(--text);
+    color: var(--dark);
     border: none;
-    padding: 15px 30px;
-    font-size: 1.1em;
-    font-weight: bold;
-    border-radius: 5px;
+    padding: 1rem 3rem;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
     cursor: pointer;
-    transition: background 0.3s, transform 0.1s;
+    transition: transform 0.2s;
+}
+.mega-cta:hover { transform: scale(1.1); background: var(--primary); }
+
+.scroll-indicator {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    font-size: 0.8rem; letter-spacing: 3px; animation: bounce 2s infinite;
 }
 
-.cta-button:hover {
-    background: var(--primary-color);
-    color: var(--text-color);
-    transform: scale(1.05);
-}
-
-/* Footer */
-.footer-info {
-    padding: 10px 40px;
-    font-size: 0.8em;
-    text-align: right;
-    opacity: 0.5;
-    pointer-events: auto;
-}
+@keyframes bounce { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 10px); } }
