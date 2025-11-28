@@ -3,89 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Ultra-Modern Landing Page</title>
+    <title>Autosalone | L'Arte della Velocità 3D</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="loading-overlay">
-        <div class="loader-spinner"></div>
-        <p>Inizializzazione Scena 3D...</p>
-    </div>
-
     <div id="webgl-container"></div>
 
-    <header id="main-header">
-        <nav class="navbar">
-            <a href="#" class="logo">
-                <span class="logo-3d">A</span>lpha**3D**
-            </a>
-            <ul class="nav-links">
-                <li><a href="#hero-section" data-section="home" class="nav-item active">Home</a></li>
-                <li><a href="#services-section" data-section="services" class="nav-item">Servizi</a></li>
-                <li><a href="#" data-section="portfolio" class="nav-item">Portfolio</a></li>
-                <li><a href="#" data-section="contact" class="nav-item">Contatti</a></li>
-            </ul>
-        </nav>
-        <div class="menu-toggle">
-            <div class="bar"></div>
-            <div class="bar"></div>
+    <nav id="navbar">
+        <div class="logo">AUTO <span>3D</span></div>
+        <div class="nav-links">
+            <a href="#modelli">Modelli</a>
+            <a href="#configuratore">Configuratore</a>
+            <a href="#contatti">Contatti</a>
+            <a href="#" class="cta-nav">Test Drive</a>
         </div>
+    </nav>
+
+    <header id="hero-section">
+        <h1 class="headline">L'Arte della Velocità.</h1>
+        <p class="subtitle">Model X: Il Futuro della Guida è Qui.</p>
+        <button class="cta-button">ESPLORA ORA</button>
     </header>
 
-    <section id="hero-section" class="content-section">
-        <div class="hero-content">
-            <div class="hero-image-container">
-                <div id="hero-3d-object-placeholder"></div>
-            </div>
-            <div class="hero-text-container">
-                <h1 class="hero-title">Rivoluziona la tua Presenza Digitale con il 3D Interattivo</h1>
-                <p class="hero-description">Trasforma idee complesse in esperienze utente immersive e memorabili. Dalla progettazione UI/UX all'animazione WebGL, siamo il tuo partner per il futuro del web.</p>
-                <div class="hero-actions">
-                    <a href="#services-section" class="btn btn-primary">Scopri di Più</a>
-                    <a href="#" class="btn btn-secondary">Contattaci</a>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <section id="services-section" class="content-section">
-        <div class="section-container">
-            <h2 class="section-title">I Nostri Servizi: L'Architettura del Futuro Web</h2>
-            <p class="section-subtitle">Trasformiamo i dati in esperienze visive interattive.</p>
-            
-            <div class="services-grid">
-                
-                <div class="service-card">
-                    <span class="card-icon">🧠</span>
-                    <h3>UX/UI 3D & Interattiva</h3>
-                    <p>Progettiamo interfacce che non si limitano a funzionare, ma che *vivono* nello spazio 3D, migliorando engagement e memorabilità.</p>
-                </div>
-                
-                <div class="service-card">
-                    <span class="card-icon">🌐</span>
-                    <h3>Sviluppo WebGL/Three.js</h3>
-                    <p>Dalla gestione di vertici e shader complessi all'ottimizzazione delle performance, costruiamo ambienti 3D nativi per il browser.</p>
-                </div>
-                
-                <div class="service-card">
-                    <span class="card-icon">🚀</span>
-                    <h3>Animazione e Logica di Movimento</h3>
-                    <p>Usiamo GSAP e Anime.js con algoritmi di movimento avanzati per creare transizioni perfette e reazioni in tempo reale all'utente.</p>
-                </div>
-                
-                <div class="service-card">
-                    <span class="card-icon">📈</span>
-                    <h3>Strategie SEO 3D-Friendly</h3>
-                    <p>Strutturiamo i contenuti dinamici per essere indicizzabili dai motori di ricerca, garantendo visibilità anche alle esperienze più complesse.</p>
-                </div>
-                
-            </div>
-        </div>
-    </section>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js" defer></script>
-    <script type="module" src="js/main.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <script src="shaders.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
     <script src="js/navbar.js" defer></script> 
 </body>
 </html>
