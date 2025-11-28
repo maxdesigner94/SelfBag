@@ -3,47 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚗 DriveMax Autosalone 3D - Galleria Olografica</title>
+    <title>AURA MOTORS | Il Futuro della Guida</title>
+    <meta name="description" content="Concessionaria auto di lusso e futuristiche. Scopri la nuova collezione AURA con esperienza 3D immersiva. Prenota il tuo test drive.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="webgl-container"></div>
-
-    <div id="ui-overlay">
-        <header>
-            <h1 id="logo">DRIVEMAX</h1>
-            <nav>
-                <a href="#" data-section="home" class="nav-item active">Home</a>
-                <a href="#" data-section="modelli" class="nav-item">Modelli</a>
-                <a href="#" data-section="contatti" class="nav-item">Contatti</a>
-            </nav>
-        </header>
-
-        <main id="content-container">
-            <section id="home-section" class="content-section active">
-                <h2>Il Tuo Showroom Digitale è Qui</h2>
-                <p>Esplora i nostri modelli unici in una galleria olografica interattiva. **Passa il mouse sugli schermi!**</p>
-                <button id="cta-button" class="cta-button">ENTRA NELLA GALLERIA</button>
-            </section>
-
-            <section id="modelli-section" class="content-section hidden">
-                <h3>Dettagli Modello Selezionato</h3>
-                <div id="model-details">
-                    <p>Seleziona un'auto nella scena 3D per i dettagli...</p>
-                </div>
-                <button id="back-button" class="cta-button">TORNA INDIETRO</button>
-            </section>
-        </main>
-
-        <div class="footer-info">
-            &copy; 2025 DriveMax Autosalone. Design 3D Interattivo Avanzato.
-        </div>
+    <div id="loader">
+        <div class="loader-text">INITIALIZING SYSTEMS...</div>
+        <div class="loader-bar"><div class="bar-fill"></div></div>
     </div>
 
- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <canvas id="webgl-canvas"></canvas>
+
+    <nav class="hud-nav">
+        <div class="logo">AURA</div>
+        <div class="menu">
+            <a href="#home">Home</a>
+            <a href="#models">Modelli</a>
+            <a href="#contact" class="cta-btn">Prenota Test Drive</a>
+        </div>
+    </nav>
+
+    <main>
+        <section id="home" class="scroll-section">
+            <div class="content-wrap">
+                <h1 class="hero-title">BEYOND <br> <span class="highlight">VELOCITY</span></h1>
+                <p class="hero-subtitle">L'evoluzione dell'automotive inizia qui.</p>
+                <div class="scroll-indicator">SCROLL TO IGNITE</div>
+            </div>
+        </section>
+
+        <section id="models" class="scroll-section right-align">
+            <div class="content-wrap">
+                <h2>MODELLO X-99</h2>
+                <p class="spec-text">AERODINAMICA ADATTIVA <br> 0-100 IN 1.9s <br> AI INTEGRATA</p>
+            </div>
+        </section>
+
+        <section id="contact" class="scroll-section center-align">
+            <div class="content-wrap">
+                <h2>SEI PRONTO?</h2>
+                <p>Vieni a trovarci nel nostro showroom digitale o fisico.</p>
+                <button class="mega-cta">CONFIGURA ORA</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     
-    <script src="main.js"></script> 
+    <script src="js/main.js"></script>
 </body>
 </html>
