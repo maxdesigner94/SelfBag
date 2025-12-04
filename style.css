@@ -1,130 +1,376 @@
-/* Reset e Stili di Base */
 :root {
-    --primary-color: #007bff; /* Blu acceso per accenti moderni */
-    --secondary-color: #f8f9fa; /* Sfondo chiaro per UI */
-    --text-color: #ffffff; /* Testo bianco sul 3D scuro */
-    --bg-color: #121212; /* Sfondo scuro per effetto "showroom" */
-    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --primary: #D72638;
+    --dark: #0f0f0f;
+    --light: #f4f4f4;
+    --gray: #888;
+    --font-head: 'Playfair Display', serif;
+    --font-body: 'Montserrat', sans-serif;
+    --ease: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    cursor: none; /* Nascondiamo cursore default per usare quello custom */
 }
 
-body, html {
-    height: 100%;
-    overflow: hidden; /* Nasconde le barre di scorrimento, l'esperienza è a schermo intero */
-    background-color: var(--bg-color);
-    font-family: var(--font-family);
-    color: var(--text-color);
+body {
+    background-color: var(--light);
+    color: var(--dark);
+    font-family: var(--font-body);
+    overflow-x: hidden;
 }
 
-/* Contenitore Pixi.js a schermo intero */
-#pixi-container {
-    width: 100%;
-    height: 100%;
-    position: absolute;
+/* --- Custom Cursor --- */
+.cursor, .cursor-follower {
+    position: fixed;
     top: 0;
     left: 0;
-    z-index: 1; /* Livello più basso */
+    width: 10px;
+    height: 10px;
+    background: var(--primary);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s;
+    mix-blend-mode: difference;
 }
 
-/* Sovrapposizione UI 2D */
-.ui-overlay {
-    position: absolute;
+.cursor-follower {
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    border: 1px solid var(--primary);
+    transition: transform 0.15s, width 0.3s, height 0.3s;
+}
+
+.cursor-hover {
+    transform: scale(2);
+    background: transparent;
+    border-color: #fff;
+}
+
+/* --- Preloader --- */
+.preloader {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    padding: 20px 40px;
+    height: 100vh;
+    background: var(--dark);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease;
+}
+.preloader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* --- Navigation --- */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 20px 50px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 10; /* Livello più alto */
+    z-index: 100;
+    transition: 0.3s ease;
+    mix-blend-mode: exclusion;
+    color: #fff;
+}
+.navbar.scrolled {
+    background: rgba(15, 15, 15, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 15px 50px;
+    mix-blend-mode: normal;
+    color: var(--light);
 }
 
-.logo {
-    font-size: 1.8rem;
-    font-weight: bold;
-    letter-spacing: 2px;
-    color: var(--primary-color);
-    text-transform: uppercase;
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 40px;
 }
-
-nav a {
-    color: var(--text-color);
+.nav-links a {
     text-decoration: none;
-    margin-left: 30px;
-    font-size: 1rem;
+    color: inherit;
+    font-weight: 500;
     position: relative;
-    opacity: 0.8;
-    transition: opacity 0.3s, color 0.3s;
 }
-
-nav a:hover {
-    opacity: 1;
-    color: var(--primary-color);
-}
-
-.cta-button, .details-button {
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    border: none;
-    padding: 10px 20px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s, transform 0.3s;
-    letter-spacing: 1px;
-}
-
-.cta-button:hover, .details-button:hover {
-    background-color: #0056b3; /* Tonalità più scura */
-    transform: scale(1.05);
-}
-
-/* Pannello Info Auto */
-.car-info-panel {
+/* Effetto Sottolineatura Sofisticato */
+.nav-links a::after {
+    content: '';
     position: absolute;
-    bottom: 50px;
-    right: 50px;
-    width: 300px;
-    background: rgba(0, 0, 0, 0.7); /* Sfondo scuro semi-trasparente */
-    backdrop-filter: blur(5px);
+    width: 0;
+    height: 1px;
+    bottom: -5px;
+    left: 50%;
+    background: var(--primary);
+    transition: width 0.3s var(--ease), left 0.3s var(--ease);
+}
+.nav-links a:hover::after {
+    width: 100%;
+    left: 0;
+}
+
+/* --- Hero Section & Parallax --- */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+.hero-bg {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 120%;
+    background: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+    z-index: -1;
+    filter: brightness(0.6);
+}
+.hero h1 {
+    font-family: var(--font-head);
+    font-size: 5rem;
+    color: #fff;
+    margin-bottom: 20px;
+}
+.hero p {
+    color: #ccc;
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+}
+
+/* --- Buttons --- */
+.btn {
+    padding: 15px 40px;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 0.3s var(--ease);
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+}
+.btn.primary {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(215, 38, 56, 0.3);
+}
+.btn.primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(215, 38, 56, 0.5);
+}
+.btn.secondary {
+    background: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+    margin-left: 20px;
+}
+.btn.secondary:hover {
+    background: #fff;
+    color: var(--dark);
+}
+
+/* --- Showroom Cards (Tilt & Reveal) --- */
+.section-padding { padding: 100px 50px; }
+.section-title {
+    font-family: var(--font-head);
+    font-size: 3rem;
+    margin-bottom: 60px;
+    text-align: center;
+}
+.grid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+}
+.card {
+    background: #fff;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+    transition: transform 0.1s linear; /* Fast for tilt */
+    transform-style: preserve-3d;
+}
+.card-image {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+}
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s var(--ease);
+}
+.card:hover .card-image img {
+    transform: scale(1.1);
+}
+.card-overlay {
+    position: absolute;
+    bottom: 0; left: 0; width: 100%;
     padding: 20px;
-    border-radius: 10px;
-    z-index: 10;
-    transform: translateX(120%); /* Inizialmente nascosto fuori schermo */
-    transition: transform 0.5s ease-out;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: #fff;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.4s var(--ease);
 }
-
-.car-info-panel.active {
-    transform: translateX(0); /* Mostrato */
+.card:hover .card-overlay {
+    transform: translateY(0);
+    opacity: 1;
 }
-
-#car-title {
-    font-size: 1.5rem;
-    color: var(--primary-color);
-    margin-bottom: 10px;
-}
-
-#car-description {
+.card-info { padding: 30px; }
+.hidden-info {
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.4s ease;
     font-size: 0.9rem;
-    margin-bottom: 15px;
+    color: var(--gray);
+}
+.card:hover .hidden-info {
+    height: 30px;
+    opacity: 1;
+    margin-top: 10px;
+}
+.link-arrow {
+    text-decoration: none;
+    color: var(--dark);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+.link-arrow span { transition: transform 0.3s ease; margin-left: 5px; }
+.card:hover .link-arrow span { transform: translateX(10px); }
+
+/* --- Configurator --- */
+.dark-section {
+    background: var(--dark);
+    color: #fff;
+    padding: 100px 50px;
+    overflow: hidden;
+}
+.split-layout {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+}
+.config-text { flex: 1; }
+.config-visual { flex: 1; display: flex; justify-content: center; }
+#car-svg {
+    width: 100%;
+    max-width: 600px;
+    transition: all 0.5s ease;
+}
+.swatch {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 10px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s;
+}
+.swatch:hover, .swatch.active {
+    transform: scale(1.2);
+    border-color: #fff;
+}
+.btn-outline {
+    background: transparent;
+    border: 1px solid #555;
+    color: #fff;
+    padding: 10px 20px;
+    margin-right: 10px;
+    transition: 0.3s;
+}
+.btn-outline.active {
+    border-color: var(--primary);
+    color: var(--primary);
 }
 
-.details-button {
+/* --- Forms & Inputs --- */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+}
+.input-group {
+    position: relative;
+    margin-bottom: 30px;
+}
+.input-group input, .input-group textarea {
+    width: 100%;
+    padding: 10px 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    outline: none;
+}
+.input-group label {
+    position: absolute;
+    left: 0;
+    top: 10px;
+    color: var(--gray);
+    pointer-events: none;
+    transition: 0.3s ease;
+}
+.input-group input:focus ~ label,
+.input-group input:not(:placeholder-shown) ~ label,
+.input-group textarea:focus ~ label,
+.input-group textarea:not(:placeholder-shown) ~ label {
+    top: -20px;
+    font-size: 0.8rem;
+    color: var(--primary);
+}
+.underline-anim {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--primary);
+    transition: width 0.4s ease;
+}
+.input-group input:focus ~ .underline-anim,
+.input-group textarea:focus ~ .underline-anim {
     width: 100%;
 }
 
-/* Animazioni CSS (per il caricamento iniziale) */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.ui-overlay, .car-info-panel {
-    animation: fadeIn 1.5s ease-out forwards;
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .navbar { padding: 20px; }
+    .hamburger { display: block; z-index: 200; }
+    .nav-links {
+        position: fixed;
+        top: 0; right: 0;
+        height: 100vh;
+        width: 100%;
+        background: var(--dark);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transform: translateX(100%);
+        transition: transform 0.5s var(--ease);
+    }
+    .nav-links.active { transform: translateX(0); }
+    .hero h1 { font-size: 3rem; }
+    .split-layout, .contact-grid { flex-direction: column; }
+    
+    /* Disabilita custom cursor su mobile */
+    .cursor, .cursor-follower { display: none; }
+    * { cursor: auto; }
 }
