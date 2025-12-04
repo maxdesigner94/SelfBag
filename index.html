@@ -3,36 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoFutura - Esperienza di Guida 3D Interattiva</title>
-    <meta name="description" content="AutoFutura: Il tuo prossimo veicolo è qui. Esplora il nostro autosalone virtuale 3D interattivo con le migliori auto del futuro.">
-    <meta name="keywords" content="autosalone, auto, veicoli, 3D, interattivo, moderno, lusso, sportiva">
+    <meta name="description" content="Matera Motors - Vendita auto nuove e usate a Matera. Configura la tua auto online. Design, affidabilità e le migliori offerte in Basilicata.">
+    <meta name="keywords" content="auto matera, concessionaria matera, vendita auto basilicata, preventivo auto, autosalone">
+    <meta name="author" content="Matera Motors">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://materamotors.netlify.app/">
+    <meta property="og:title" content="Matera Motors | L'Eccellenza dell'Auto a Matera">
+    <meta property="og:description" content="Scopri la tua prossima auto. Configurala online e richiedi un preventivo in un click.">
+
+    <title>Matera Motors | Concessionaria Auto Matera</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "AutoDealer",
+      "name": "Matera Motors",
+      "image": "https://source.unsplash.com/random/1200x600/?car",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Via delle Arti, 10",
+        "addressLocality": "Matera",
+        "addressRegion": "MT",
+        "postalCode": "75100",
+        "addressCountry": "IT"
+      },
+      "openingHours": "Mo-Fr 09:00-19:00",
+      "telephone": "+39 0835 000000"
+    }
+    </script>
 </head>
-<body>
+<body class="loading">
 
-    <div id="pixi-container"></div>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
 
-    <header class="ui-overlay">
-        <div class="logo">AutoFutura</div>
-        <nav>
-            <a href="#" data-section="home">Home</a>
-            <a href="#" data-section="modelli">Modelli</a>
-            <a href="#" data-section="contatti">Contatti</a>
-        </nav>
-        <button class="cta-button">Prenota un Test Drive</button>
-    </header>
-
-    <div class="car-info-panel" id="info-panel">
-        <h3 id="car-title">Seleziona un'Auto</h3>
-        <p id="car-description">Clicca su un'auto nell'ambiente 3D per scoprirne i dettagli.</p>
-        <button class="details-button">Dettagli & Prezzo</button>
+    <div class="preloader">
+        <div class="skeleton-logo"></div>
+        <div class="progress-bar"><div class="progress"></div></div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
-    
-    <script src="main.js"></script>
+    <nav class="navbar">
+        <div class="logo">MATERA<span class="highlight">MOTORS</span></div>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home" class="hover-link">Home</a></li>
+            <li><a href="#showroom" class="hover-link">Showroom</a></li>
+            <li><a href="#configurator" class="hover-link">Configuratore</a></li>
+            <li><a href="#contact" class="hover-link cta-btn">Contattaci</a></li>
+        </ul>
+    </nav>
 
+    <header id="home" class="hero">
+        <div class="hero-bg parallax-bg"></div> <div class="hero-content">
+            <h1 class="reveal-text">Guidare è un'arte.</h1>
+            <p class="reveal-text delay-1">Scopri la selezione esclusiva nel cuore di Matera.</p>
+            <div class="btn-group reveal-text delay-2">
+                <a href="#showroom" class="btn primary">Esplora Modelli</a>
+                <a href="#contact" class="btn secondary">Richiedi Preventivo</a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scorri</span>
+            <div class="line"></div>
+        </div>
+    </header>
+
+    <section id="showroom" class="section-padding">
+        <div class="container">
+            <h2 class="section-title">La Nostra Selezione</h2>
+            <div class="grid-cards">
+                <article class="card tilt-card">
+                    <div class="card-image lazy-wrapper">
+                        <img src="https://images.unsplash.com/photo-1503376763036-066120622c74?auto=format&fit=crop&w=800&q=80" alt="Sportiva Luxury" loading="lazy">
+                        <div class="card-overlay">
+                            <h3>Sport Line</h3>
+                            <p>Da 350€ / mese</p>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <h4>Sport Luxury GT</h4>
+                        <p class="hidden-info">0-100 in 3.5s | Ibrida Plug-in</p>
+                        <a href="#contact" class="link-arrow">Chiedi info <span>&rarr;</span></a>
+                    </div>
+                </article>
+
+                <article class="card tilt-card">
+                    <div class="card-image lazy-wrapper">
+                        <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80" alt="SUV Familiare" loading="lazy">
+                         <div class="card-overlay">
+                            <h3>Urban SUV</h3>
+                            <p>Da 290€ / mese</p>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <h4>Matera Cross</h4>
+                        <p class="hidden-info">Spazio per 7 | Full Electric</p>
+                        <a href="#contact" class="link-arrow">Chiedi info <span>&rarr;</span></a>
+                    </div>
+                </article>
+
+                <article class="card tilt-card">
+                    <div class="card-image lazy-wrapper">
+                        <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=800&q=80" alt="Sedan Elegante" loading="lazy">
+                         <div class="card-overlay">
+                            <h3>Executive</h3>
+                            <p>Da 410€ / mese</p>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <h4>Executive Sedan</h4>
+                        <p class="hidden-info">Interni in pelle | Autopilot</p>
+                        <a href="#contact" class="link-arrow">Chiedi info <span>&rarr;</span></a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section id="configurator" class="dark-section">
+        <div class="container split-layout">
+            <div class="config-text">
+                <h2>Crea la tua Visione.</h2>
+                <p>Minimalista. Essenziale. Scegli lo stile che ti rappresenta.</p>
+                
+                <div class="controls">
+                    <label>Seleziona Colore:</label>
+                    <div class="color-options">
+                        <div class="swatch" data-color="#D72638" style="background: #D72638;"></div> <div class="swatch" data-color="#1A1A1A" style="background: #1A1A1A;"></div> <div class="swatch" data-color="#F2F2F2" style="background: #F2F2F2;"></div> <div class="swatch" data-color="#2E4057" style="background: #2E4057;"></div> </div>
+                    
+                    <label style="margin-top: 20px;">Tipo Cerchi:</label>
+                    <div class="rim-options">
+                        <button class="btn-outline active" data-rim="standard">Standard</button>
+                        <button class="btn-outline" data-rim="sport">Sport</button>
+                    </div>
+                    
+                    <div class="price-estimator">
+                        Prezzo Stimato: <span id="price-tag">€ 24.500</span>
+                    </div>
+
+                    <a href="#contact" class="btn primary full-width" onclick="prefillForm()">Richiedi questa configurazione</a>
+                </div>
+            </div>
+
+            <div class="config-visual">
+                <svg id="car-svg" viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <filter id="shadow-blur" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+                            <feOffset dx="0" dy="10" result="offsetblur"/>
+                            <feComponentTransfer>
+                                <feFuncA type="linear" slope="0.5"/>
+                            </feComponentTransfer>
+                            <feMerge> 
+                                <feMergeNode/>
+                                <feMergeNode in="SourceGraphic"/> 
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <path id="car-body" d="M40,130 L60,80 L140,50 L320,50 L420,90 L460,130 L460,150 L40,150 Z" fill="#D72638" stroke="none" />
+                    <path d="M150,60 L310,60 L380,90 L140,90 Z" fill="#333" />
+                    <circle id="wheel-front" cx="100" cy="150" r="30" fill="#333" stroke="#555" stroke-width="2" />
+                    <circle id="wheel-back" cx="380" cy="150" r="30" fill="#333" stroke="#555" stroke-width="2" />
+                    <ellipse cx="250" cy="175" rx="200" ry="10" fill="rgba(0,0,0,0.3)" filter="url(#shadow-blur)"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section-padding">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h2>Parliamo del tuo futuro.</h2>
+                    <p>Vieni a trovarci a Matera o scrivici.</p>
+                    <ul class="details">
+                        <li><strong>Email:</strong> info@materamotors.it</li>
+                        <li><strong>Telefono:</strong> +39 0835 123456</li>
+                        <li><strong>Indirizzo:</strong> Via Sassi, Matera (MT)</li>
+                    </ul>
+                </div>
+                <form class="contact-form" action="https://formsubmit.co/latuaemail@esempio.com" method="POST">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_next" value="https://materamotors.netlify.app/thanks.html">
+                    <input type="hidden" name="_subject" value="Nuova richiesta da Matera Motors">
+
+                    <div class="input-group">
+                        <input type="text" name="name" required placeholder=" " id="name">
+                        <label for="name">Nome Completo</label>
+                        <span class="underline-anim"></span>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" name="email" required placeholder=" " id="email">
+                        <label for="email">Email</label>
+                        <span class="underline-anim"></span>
+                    </div>
+                    <div class="input-group">
+                        <textarea name="message" id="message" required placeholder=" "></textarea>
+                        <label for="message">Messaggio / Configurazione</label>
+                        <span class="underline-anim"></span>
+                    </div>
+                    <button type="submit" class="btn primary submit-btn">Invia Richiesta</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Matera Motors. Designed for Excellence.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
